@@ -1,0 +1,68 @@
+#tabs_ex_txt {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 8px 2px;
+    padding: 4px;
+    border-radius: 8px;
+    background-color: var(--background-fill-secondary);
+}
+
+    #tabs_ex_txt .tab_button {
+        margin: 4px;
+        padding: 2px 4px;
+        border: 2px;
+        border-style: ridge;
+        color: var(--button-secondary-text-color);
+        border-color: var(--block-info-text-color);
+        background-color: transparent;
+    }
+
+        #tabs_ex_txt .tab_button.selected {
+            background-color: var(--border-color-accent);
+        }
+
+#tabs_ex_content_txt {
+    height: 40em;
+    padding: 1em;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+#tabs_ex_img {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 8px 2px;
+    padding: 4px;
+    border-radius: 8px;
+    background-color: var(--background-fill-secondary);
+}
+
+    #tabs_ex_img .tab_button {
+        margin: 4px;
+        padding: 2px 4px;
+        border: 2px;
+        border-style: ridge;
+        color: var(--button-secondary-text-color);
+        border-color: var(--block-info-text-color);
+        background-color: transparent;
+    }
+
+        #tabs_ex_img .tab_button.selected {
+            background-color: var(--border-color-accent);
+        }
+
+#tabs_ex_content_img {
+    height: 60em;
+    padding: 1em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: var(--block-background-fill);
+    border-radius: 8px;
+}
