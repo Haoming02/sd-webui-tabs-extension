@@ -93,11 +93,17 @@ onUiLoaded(async () => {
 
                 // Ignore Extension with no UI
                 if (extension.children.length > 0) {
-                    to_delete.push(container[i]);
 
-                    // ControlNet has an additional layer of div
-                    while (extension.children.length < 3)
-                        extension = extension.children[0];
+                    // Some Extensions have less/more layers of div
+                    try {
+                        while (extension.children[1] == null || extension.children[1].children[0].tagName.toLowerCase() !== 'span')
+                            extension = extension.children[0];
+                    } catch {
+                        // Unrecognized Structure
+                        continue;
+                    }
+
+                    to_delete.push(container[i]);
 
                     const extension_name = extension.children[1].children[0].innerHTML;
                     const extension_content = extension.children[2];
