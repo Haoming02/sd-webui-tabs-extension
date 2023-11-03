@@ -1,3 +1,14 @@
+function tryFindEnableToggle(extension) {
+    const ts = extension.querySelectorAll('input[type=checkbox]');
+
+    for (let i = 0; i < ts.length; i++) {
+        if (ts[i].parentNode.querySelector('span').innerHTML.toLowerCase().includes('enable'))
+            return ts[i];
+    }
+
+    return null;
+}
+
 function setup_tabs(mode, extensions) {
 
     const container = document.getElementById((mode === 'txt') ? "txt2img_script_container" : "img2img_results");
@@ -38,11 +49,41 @@ function setup_tabs(mode, extensions) {
         });
 
         contentContainer.appendChild(extensions[tabKey]);
+
+        if (tabKey !== 'Scripts') {
+            const enableToggle = tryFindEnableToggle(extensions[tabKey]);
+
+            if (enableToggle != null) {
+                // Change Color if Enabled
+                enableToggle.addEventListener('change', () => {
+                    if (enableToggle.checked)
+                        allButtons[tabKey].classList.add('active');
+                    else
+                        allButtons[tabKey].classList.remove('active');
+                });
+
+                // Ctrl + Click = Toggle
+                allButtons[tabKey].addEventListener('click', (e) => {
+                    if (window.event.ctrlKey)
+                        enableToggle.click();
+                });
+            }
+        }
     });
 
     // Select the first option at the start
     Object.values(extensions)[0].style.display = "block";
     Object.values(allButtons)[0].classList.add('selected');
+
+    // Check for active Script
+    const scriptsDropdown = extensions['Scripts'].querySelector('input');
+
+    container.addEventListener('click', () => {
+        if (scriptsDropdown.value === 'None')
+            allButtons['Scripts'].classList.remove('active');
+        else
+            allButtons['Scripts'].classList.add('active');
+    });
 }
 
 function getDelay() {
@@ -96,7 +137,7 @@ onUiLoaded(async () => {
 
                     // Some Extensions have less/more layers of div
                     try {
-                        while (extension.children[1] == null || extension.children[1].children[0].tagName.toLowerCase() !== 'span')
+                        while (extension.children.length < 2 || extension.children[1].children.length < 1 || extension.children[1].children[0].tagName.toLowerCase() !== 'span')
                             extension = extension.children[0];
                     } catch {
                         // Unrecognized Structure
@@ -127,4 +168,4 @@ onUiLoaded(async () => {
 
     }, getDelay());
 
-})
+});

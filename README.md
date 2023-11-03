@@ -10,6 +10,10 @@ Additionally, the `Scripts` section is also moved into a tab.
 By default, the Tabs for `txt2img` are placed under the settings (the same position); while the Tabs for `img2img` are placed under the Generation Results, 
 since the image setttings are already significantly longer.
 
+When the Extension is enabled, the Tab button will turn green to indicate that. You can also `Ctrl + Click` the Tab button to quickly toggle the Extension.
+
+> This tries to find the first Checkbox with a label containing "enable" within the Extension. If it is not found, then this feature will not be available for said Extension!
+
 <p align="center"><img src="demo.jpg" width=768></p>
 
 ## Settings
@@ -19,4 +23,4 @@ since the image setttings are already significantly longer.
 
 <hr>
 
-<sup> **Note:** This Extension is still ***experimental***. The few Extensions I installed worked fine during my testings. Though, I cannot guarantee that every single Extension would function properly. </sup>
+<sup> **Note:** This Extension is still ***experimental***. The few Extensions I installed worked fine during my testings. However, I cannot guarantee that every single Extension would function properly, yet. </sup>

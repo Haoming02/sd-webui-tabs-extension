@@ -23,6 +23,9 @@
         #tabs_ex_txt .tab_button.selected {
             background-color: var(--border-color-accent);
         }
+        #tabs_ex_txt .tab_button.active {
+            color: greenyellow;
+        }
 
 #tabs_ex_content_txt {
     height: 40em;
@@ -56,6 +59,9 @@
 
         #tabs_ex_img .tab_button.selected {
             background-color: var(--border-color-accent);
+        }
+        #tabs_ex_img .tab_button.active {
+            color: greenyellow;
         }
 
 #tabs_ex_content_img {
