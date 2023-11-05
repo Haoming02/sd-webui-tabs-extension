@@ -37,28 +37,34 @@ function setup_tabs(mode, extensions) {
         const tabButton = document.createElement("button");
 
         tabButton.classList.add('tab_button');
-        tabButton.textContent = tabKey;
+        if (tabKey === 'Scripts')
+            tabButton.textContent = 'Scripts';
+        else {
+            extensions[tabKey][0].removeAttribute('id');
+            extensions[tabKey][0].className = '';
+            tabButton.appendChild(extensions[tabKey][0]);
+        }
 
         tabsContainer.appendChild(tabButton);
         allButtons[tabKey] = tabButton;
 
         tabButton.addEventListener("click", () => {
             Object.values(extensions).forEach(tabDiv => {
-                tabDiv.style.display = "none";
+                tabDiv[1].style.display = "none";
             });
 
             Object.values(allButtons).forEach(tabBtn => {
                 tabBtn.classList.remove('selected');
             });
 
-            extensions[tabKey].style.display = "block";
+            extensions[tabKey][1].style.display = "block";
             allButtons[tabKey].classList.add('selected');
         });
 
-        contentContainer.appendChild(extensions[tabKey]);
+        contentContainer.appendChild(extensions[tabKey][1]);
 
         if (tabKey !== 'Scripts') {
-            const enableToggle = tryFindEnableToggle(extensions[tabKey]);
+            const enableToggle = tryFindEnableToggle(extensions[tabKey][1]);
 
             if (enableToggle != null) {
                 // Change Color if Enabled
@@ -79,11 +85,11 @@ function setup_tabs(mode, extensions) {
     });
 
     // Select the first option at the start
-    Object.values(extensions)[0].style.display = "block";
+    Object.values(extensions)[0][1].style.display = "block";
     Object.values(allButtons)[0].classList.add('selected');
 
     // Check for active Script
-    const scriptsDropdown = extensions['Scripts'].querySelector('input');
+    const scriptsDropdown = extensions['Scripts'][1].querySelector('input');
     const tab = document.getElementById('tab_' + mode + '2img');
 
     tab.addEventListener('click', () => {
@@ -131,7 +137,7 @@ onUiLoaded(async () => {
                     for (let x = container.length - 1; x > i; x--)
                         script_block.appendChild(container[x]);
 
-                    extensions['Scripts'] = script_block;
+                    extensions['Scripts'] = [null, script_block];
                     to_delete.push(container[i]);
 
                     break;
@@ -154,12 +160,12 @@ onUiLoaded(async () => {
 
                     to_delete.push(container[i]);
 
-                    const extension_name = extension.children[1].children[0].innerHTML;
+                    const extension_name = extension.children[1].children[0];
                     const extension_content = extension.children[2];
 
                     extension_content.id = container[i].children[0].children[0].id;
 
-                    extensions[extension_name] = extension_content;
+                    extensions[extension_name.innerHTML] = [extension_name, extension_content];
                 }
             }
 
