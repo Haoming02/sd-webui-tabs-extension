@@ -1,11 +1,18 @@
 function tryFindEnableToggle(extension) {
     const ts = extension.querySelectorAll('input[type=checkbox]');
-
+    // Try to find "enable" first
     for (let i = 0; i < ts.length; i++) {
         if (ts[i].parentNode.querySelector('span').innerHTML.toLowerCase().includes('enable'))
             return ts[i];
     }
 
+    // Then to find "active" second
+    for (let i = 0; i < ts.length; i++) {
+        if (ts[i].parentNode.querySelector('span').innerHTML.toLowerCase().includes('active'))
+            return ts[i];
+    }
+
+    // Null otherwise
     return null;
 }
 
@@ -77,8 +84,9 @@ function setup_tabs(mode, extensions) {
 
     // Check for active Script
     const scriptsDropdown = extensions['Scripts'].querySelector('input');
+    const tab = document.getElementById('tab_' + mode + '2img');
 
-    container.addEventListener('click', () => {
+    tab.addEventListener('click', () => {
         if (scriptsDropdown.value === 'None')
             allButtons['Scripts'].classList.remove('active');
         else
