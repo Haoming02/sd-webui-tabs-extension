@@ -19,11 +19,11 @@ After launching the Webui *(including the browser, not just the console)* with t
 You can edit this file to change which side each element is placed. 
 - **left** side refers to under the parameters *(the original location)*
 - **right** side refers to under the generation Results
-- The `t2i` and `i2i` entries control where the Tab buttons are placed
-- The `default` controls where each new Extension not in the config should be placed
-- Then the rest *should* contain all available Extensions found
+- The `tabs` entry controls where the Tab buttons are placed
+- The `default` entry controls where each new Extension not in the config should be placed
+- The rest *should* be the entries of all available Extensions
 
-> You can open the `.csv` file with any text editing program, or a spreadsheet program like Excel. Highly recommended to not touch the first column.
+> You can open the `.csv` file with any text editing program, or a spreadsheet program like Excel. Recommended to not touch the first row or the first column.
 
 ### Settings
 > The settings are in the **User interface** section

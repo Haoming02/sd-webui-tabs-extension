@@ -35,10 +35,7 @@ function setup_tabs(mode, extensions) {
     const tabsContainer = document.createElement("div");
     tabsContainer.id = 'tabs_ex_' + mode;
 
-    if (mode === 'txt')
-        container[CONFIG['t2i']].appendChild(tabsContainer);
-    else
-        container[CONFIG['i2i']].appendChild(tabsContainer);
+    container[CONFIG['tabs'][mode]].appendChild(tabsContainer);
 
     // Div to host the contents
     const contentContainer = {};
@@ -82,7 +79,7 @@ function setup_tabs(mode, extensions) {
             allButtons[tabKey].classList.add('selected');
         });
 
-        contentContainer[CONFIG[rvExtName(tabKey)]].appendChild(extensions[tabKey][1]);
+        contentContainer[CONFIG[rvExtName(tabKey)][mode]].appendChild(extensions[tabKey][1]);
 
         if (tabKey !== 'Scripts') {
             const enableToggle = tryFindEnableToggle(extensions[tabKey][1]);
@@ -130,12 +127,14 @@ function saveConfigs() {
     const button = document.getElementById('TABSEX_BT');
 
     const keys = Object.keys(CONFIG);
-    var data = "";
+    var data = ",txt,img\n";
 
     for (let i = 0; i < keys.length; i++) {
         data += keys[i];
         data += ',';
-        data += CONFIG[keys[i]];
+        data += CONFIG[keys[i]]['txt'];
+        data += ',';
+        data += CONFIG[keys[i]]['img'];
         data += '\n';
     }
 
@@ -149,12 +148,25 @@ function saveConfigs() {
 }
 
 function parseConfigs() {
+    // Convert csv into dict
     const label = document.getElementById('TABSEX_LB').querySelector('textarea');
     const lines = label.value.trim().split('\n');
 
-    // Convert csv into dict
-    for (let i = 0; i < lines.length; i++)
-        CONFIG[lines[i].split(',')[0].trim()] = lines[i].split(',')[1].trim();
+    if (lines[0].split(',')[0].trim().length > 0) {
+        // Old Configs...
+        CONFIG['tabs'] = {};
+        CONFIG['tabs']['txt'] = 'left';
+        CONFIG['tabs']['img'] = 'right';
+        CONFIG['default'] = {};
+        CONFIG['default']['txt'] = 'left';
+        CONFIG['default']['img'] = 'right';
+    } else {
+        for (let i = 1; i < lines.length; i++) {
+            CONFIG[lines[i].split(',')[0].trim()] = {};
+            CONFIG[lines[i].split(',')[0].trim()][lines[0].split(',')[1].trim()] = lines[i].split(',')[1].trim();
+            CONFIG[lines[i].split(',')[0].trim()][lines[0].split(',')[2].trim()] = lines[i].split(',')[2].trim();
+        }
+    }
 }
 
 onUiLoaded(async () => {

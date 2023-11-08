@@ -4,7 +4,7 @@ import gradio as gr
 
 CONFIG_FILE = scripts.basedir() + '/' + 'tab_configs.csv'
 
-DEFAULT_VALUE = 't2i,left\ni2i,right\ndefault,right'
+DEFAULT_VALUE = ',txt,img\ntabs,left,right\ndefault,left,right\n'
 
 def write_data(data:str):
     with open(CONFIG_FILE, 'w') as csv_file:
