@@ -1,5 +1,8 @@
+const CONFIG = {};
+
 function tryFindEnableToggle(extension) {
     const ts = extension.querySelectorAll('input[type=checkbox]');
+
     // Try to find "enable" first
     for (let i = 0; i < ts.length; i++) {
         if (ts[i].parentNode.querySelector('span').innerHTML.toLowerCase().includes('enable'))
@@ -16,27 +19,45 @@ function tryFindEnableToggle(extension) {
     return null;
 }
 
+function rvExtName(input) {
+    // Remove version info from Extension Name (since it will keep updating...)
+    const version_pattern = /([Vv](er)?(\.|\s)*\d)/;
+    return input.split(version_pattern)[0].trim();
+}
+
 function setup_tabs(mode, extensions) {
 
-    const container = document.getElementById((mode === 'txt') ? "txt2img_script_container" : "img2img_results");
+    const container = {};
+    container['left'] = document.getElementById(mode + '2img_script_container');
+    container['right'] = document.getElementById(mode + '2img_results');
 
     // Div to host the buttons
     const tabsContainer = document.createElement("div");
     tabsContainer.id = 'tabs_ex_' + mode;
 
-    // Div to host the contents
-    const contentContainer = document.createElement("div");
-    contentContainer.id = 'tabs_ex_content_' + mode;
+    if (mode === 'txt')
+        container[CONFIG['t2i']].appendChild(tabsContainer);
+    else
+        container[CONFIG['i2i']].appendChild(tabsContainer);
 
-    container.appendChild(tabsContainer);
-    container.appendChild(contentContainer);
+    // Div to host the contents
+    const contentContainer = {};
+
+    ['left', 'right'].forEach((side) => {
+        contentContainer[side] = document.createElement("div");
+        contentContainer[side].id = `tabs_ex_content_${mode}_${side}`;
+        container[side].appendChild(contentContainer[side]);
+    });
 
     const allButtons = {};
 
     Object.keys(extensions).forEach(tabKey => {
-        const tabButton = document.createElement("button");
+        if (!CONFIG.hasOwnProperty(rvExtName(tabKey)))
+            CONFIG[rvExtName(tabKey)] = CONFIG['default'];
 
+        const tabButton = document.createElement("button");
         tabButton.classList.add('tab_button');
+
         if (tabKey === 'Scripts')
             tabButton.textContent = 'Scripts';
         else {
@@ -61,7 +82,7 @@ function setup_tabs(mode, extensions) {
             allButtons[tabKey].classList.add('selected');
         });
 
-        contentContainer.appendChild(extensions[tabKey][1]);
+        contentContainer[CONFIG[rvExtName(tabKey)]].appendChild(extensions[tabKey][1]);
 
         if (tabKey !== 'Scripts') {
             const enableToggle = tryFindEnableToggle(extensions[tabKey][1]);
@@ -104,11 +125,41 @@ function getDelay() {
     return gradioApp().getElementById('setting_tabs_ex_delay').querySelector('input[type=range]').value;
 }
 
-function shouldMoveButton() {
-    return gradioApp().getElementById('setting_tabs_ex_move_t2i_btn').querySelector('input[type=checkbox]').checked;
+function saveConfigs() {
+    const label = document.getElementById('TABSEX_LB').querySelector('textarea');
+    const button = document.getElementById('TABSEX_BT');
+
+    const keys = Object.keys(CONFIG);
+    var data = "";
+
+    for (let i = 0; i < keys.length; i++) {
+        data += keys[i];
+        data += ',';
+        data += CONFIG[keys[i]];
+        data += '\n';
+    }
+
+    label.value = data;
+    updateInput(label);
+
+    setTimeout(() => {
+        button.click();
+        button.parentElement.parentElement.remove();
+    }, getDelay());
+}
+
+function parseConfigs() {
+    const label = document.getElementById('TABSEX_LB').querySelector('textarea');
+    const lines = label.value.trim().split('\n');
+
+    // Convert csv into dict
+    for (let i = 0; i < lines.length; i++)
+        CONFIG[lines[i].split(',')[0].trim()] = lines[i].split(',')[1].trim();
 }
 
 onUiLoaded(async () => {
+
+    parseConfigs();
 
     // Delay to avoid breaking references during init
     setTimeout(() => {
@@ -176,8 +227,7 @@ onUiLoaded(async () => {
             for (let i = 0; i < to_delete.length; i++)
                 to_delete[i].remove();
 
-            if (shouldMoveButton())
-                document.getElementById("txt2img_results").appendChild(document.getElementById("tabs_ex_txt"));
+            saveConfigs();
         }, getDelay());
 
     }, getDelay());
