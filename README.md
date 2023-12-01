@@ -1,5 +1,4 @@
 ﻿# SD Webui Tabs Extension
-<p align="right"><i><b>BETA</b></i></p>
 
 This is an Extension for the [Automatic1111 Webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui), which replaces the original Extension layout with a Tab System instead.
 
@@ -28,7 +27,3 @@ You can edit this file to change which side each element is placed.
 ### Settings
 > The settings are in the **User interface** section
 - **Delay:** This Extension moves the contents after a tiny delay to prevent breaking some references. If you have a slow machine, you *may* need to increase the delay.
-
-<hr>
-
-<sup> **Note:** This Extension is still ***experimental***. The few Extensions I installed worked fine during my testing. However, I cannot guarantee that every single Extension will function properly, yet. </sup>

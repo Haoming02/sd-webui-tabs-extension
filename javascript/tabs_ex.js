@@ -98,6 +98,10 @@ function setup_tabs(mode, extensions) {
                     if (window.event.ctrlKey)
                         enableToggle.click();
                 });
+
+                // Check if already Enabled on start up
+                if (enableToggle.checked)
+                    allButtons[tabKey].classList.add('active');
             }
         }
     });
