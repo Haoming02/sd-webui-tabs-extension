@@ -173,6 +173,17 @@ function parseConfigs() {
     }
 }
 
+function stealGradioCheckbox(MYcheckbox, MYspan) {
+    const setting = document.getElementById('tab_settings');
+    const label = setting.querySelector('input[type=checkbox]').parentElement.cloneNode(true);
+
+    label.removeChild(label.firstChild);
+    label.insertBefore(MYcheckbox, label.firstChild);
+    label.querySelector('span').innerHTML = MYspan;
+
+    return label;
+}
+
 onUiLoaded(async () => {
 
     parseConfigs();
@@ -218,8 +229,20 @@ onUiLoaded(async () => {
 
                     // Some Extensions have less/more layers of div
                     try {
-                        while (extension.children.length < 2 || extension.children[1].children.length < 1 || extension.children[1].children[0].tagName.toLowerCase() !== 'span')
-                            extension = extension.children[0];
+                        while (extension.children.length < 2 || extension.children[1].children.length < 1 || extension.children[1].children[0].tagName.toLowerCase() !== 'span') {
+                            if (extension.children[0].classList.contains('hidden')) {
+                                // InputAccordion
+                                const checkbox = extension.children[0].querySelector('input[type=checkbox]');
+
+                                const label = stealGradioCheckbox(checkbox, 'Enable');
+                                label.style.margin = "1em 0px";
+
+                                extension = extension.children[1];
+                                extension.children[2].insertBefore(label, extension.children[2].firstChild);
+                            }
+                            else
+                                extension = extension.children[0];
+                        }
                     } catch {
                         // Unrecognized Structure
                         continue;
@@ -230,7 +253,21 @@ onUiLoaded(async () => {
                     const extension_name = extension.children[1].children[0];
                     const extension_content = extension.children[2];
 
-                    extension_content.id = container[i].children[0].children[0].id;
+                    if (container[i].children[0].children[0].classList.contains('hidden')) {
+                        // InputAccordion
+                        extension_content.id = container[i].children[0].children[1].id;
+
+                        const checkbox_dummy = extension_name.querySelector('input[type=checkbox]');
+
+                        extension_content.appendChild(checkbox_dummy);
+                        checkbox_dummy.style.display = 'none';
+
+                        // Prevent JavaScript from throwing "undefined" errors
+                        extension_content.visibleCheckbox = checkbox_dummy;
+                        extension_content.onVisibleCheckboxChange = () => null;
+                    }
+                    else
+                        extension_content.id = container[i].children[0].children[0].id;
 
                     extensions[extension_name.innerHTML] = [extension_name, extension_content];
                 }
