@@ -233,12 +233,10 @@ onUiLoaded(async () => {
                             if (extension.children[0].classList.contains('hidden')) {
                                 // InputAccordion
                                 const checkbox = extension.children[0].querySelector('input[type=checkbox]');
-
-                                const label = stealGradioCheckbox(checkbox, 'Enable');
-                                label.style.margin = "1em 0px";
+                                checkbox.style.display = 'none';
 
                                 extension = extension.children[1];
-                                extension.children[2].insertBefore(label, extension.children[2].firstChild);
+                                extension.children[2].appendChild(checkbox);
                             }
                             else
                                 extension = extension.children[0];
@@ -258,9 +256,10 @@ onUiLoaded(async () => {
                         extension_content.id = container[i].children[0].children[1].id;
 
                         const checkbox_dummy = extension_name.querySelector('input[type=checkbox]');
+                        const label = stealGradioCheckbox(checkbox_dummy, 'Enable');
+                        label.style.margin = "1em 0px";
 
-                        extension_content.appendChild(checkbox_dummy);
-                        checkbox_dummy.style.display = 'none';
+                        extension_content.insertBefore(label, extension_content.firstChild);
 
                         // Prevent JavaScript from throwing "undefined" errors
                         extension_content.visibleCheckbox = checkbox_dummy;
