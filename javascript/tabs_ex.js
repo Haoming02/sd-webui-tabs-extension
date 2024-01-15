@@ -192,6 +192,7 @@ onUiLoaded(async () => {
     setTimeout(() => {
 
         const to_delete = [];
+        const to_hide = [];
 
         // Works for both txt2img & img2img
         ['txt', 'img'].forEach((mode) => {
@@ -232,11 +233,10 @@ onUiLoaded(async () => {
                         while (extension.children.length < 2 || extension.children[1].children.length < 1 || extension.children[1].children[0].tagName.toLowerCase() !== 'span') {
                             if (extension.children[0].classList.contains('hidden')) {
                                 // InputAccordion
-                                const checkbox = extension.children[0].querySelector('input[type=checkbox]');
-                                checkbox.style.display = 'none';
-
                                 extension = extension.children[1];
-                                extension.children[2].appendChild(checkbox);
+
+                                // Hide instead of Delete to avoid breaking references
+                                to_hide.push(container[i]);
                             }
                             else
                                 extension = extension.children[0];
@@ -246,7 +246,8 @@ onUiLoaded(async () => {
                         continue;
                     }
 
-                    to_delete.push(container[i]);
+                    if (!to_hide.includes(container[i]))
+                        to_delete.push(container[i]);
 
                     const extension_name = extension.children[1].children[0];
                     const extension_content = extension.children[2];
@@ -255,20 +256,30 @@ onUiLoaded(async () => {
                         // InputAccordion
                         extension_content.id = container[i].children[0].children[1].id;
 
-                        const checkbox_dummy = extension_name.querySelector('input[type=checkbox]');
+                        const checkbox = extension_name.querySelector('input[type=checkbox]');
+
+                        // Create a dummy Checkbox linked to the original Checkbox
+                        const checkbox_dummy = checkbox.cloneNode();
+                        checkbox_dummy.addEventListener('change', () => {
+                            if (checkbox.checked !== checkbox_dummy.checked)
+                                checkbox.click();
+                        });
+
                         const label = stealGradioCheckbox(checkbox_dummy, 'Enable');
                         label.style.margin = "1em 0px";
 
+                        // Add to the top as the "Enable" Checkbox
                         extension_content.insertBefore(label, extension_content.firstChild);
 
-                        // Prevent JavaScript from throwing "undefined" errors
-                        extension_content.visibleCheckbox = checkbox_dummy;
-                        extension_content.onVisibleCheckboxChange = () => null;
+                        // Copy the label to avoid breaking references
+                        const extension_name_dummy = extension_name.cloneNode(true);
+                        extension_name_dummy.querySelector('input[type=checkbox]')?.remove();
+                        extensions[extension_name_dummy.textContent.trim()] = [extension_name_dummy, extension_content];
                     }
-                    else
+                    else {
                         extension_content.id = container[i].children[0].children[0].id;
-
-                    extensions[extension_name.innerHTML] = [extension_name, extension_content];
+                        extensions[extension_name.textContent.trim()] = [extension_name, extension_content];
+                    }
                 }
             }
 
@@ -278,6 +289,8 @@ onUiLoaded(async () => {
         setTimeout(() => {
             for (let i = 0; i < to_delete.length; i++)
                 to_delete[i].remove();
+            for (let i = 0; i < to_hide.length; i++)
+                to_hide[i].style.display = 'none';
 
             saveConfigs();
         }, getDelay());
