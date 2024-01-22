@@ -28,19 +28,13 @@
         }
 
 #tabs_ex_content_txt_right, #tabs_ex_content_img_left {
-    height: 40em;
     padding: 1em;
-    overflow-x: hidden;
-    overflow-y: auto;
     background-color: var(--block-background-fill);
     border-radius: 8px;
 }
 
 #tabs_ex_content_txt_left, #tabs_ex_content_img_right {
-    height: 60em;
     padding: 1em;
-    overflow-x: hidden;
-    overflow-y: auto;
     background-color: var(--block-background-fill);
     border-radius: 8px;
 }

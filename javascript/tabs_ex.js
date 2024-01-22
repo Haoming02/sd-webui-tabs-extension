@@ -43,6 +43,7 @@ function setup_tabs(mode, extensions) {
     ['left', 'right'].forEach((side) => {
         contentContainer[side] = document.createElement("div");
         contentContainer[side].id = `tabs_ex_content_${mode}_${side}`;
+        contentContainer[side].style.overflow = "visible";
         container[side].appendChild(contentContainer[side]);
     });
 
