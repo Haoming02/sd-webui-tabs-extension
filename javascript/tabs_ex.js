@@ -40,10 +40,18 @@ function setup_tabs(mode, extensions) {
     // Div to host the contents
     const contentContainer = {};
 
+    var height = 0;
+    Object.keys(extensions).forEach(tabKey => {
+        extensions[tabKey][1].style.display = 'block';
+        height = Math.max(height, extensions[tabKey][1].clientHeight);
+        extensions[tabKey][1].style.display = 'none';
+    });
+
     ['left', 'right'].forEach((side) => {
         contentContainer[side] = document.createElement("div");
         contentContainer[side].id = `tabs_ex_content_${mode}_${side}`;
         contentContainer[side].style.overflow = "visible";
+        contentContainer[side].style.minHeight = `calc(${height}px + 1em)`;
         container[side].appendChild(contentContainer[side]);
     });
 
