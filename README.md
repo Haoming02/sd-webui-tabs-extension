@@ -30,3 +30,4 @@ You can edit this file to change which side each element is placed.
 ### Settings
 > The settings are in the **User interface** section
 - **Delay:** This Extension moves the contents after a tiny delay to prevent breaking some references. If you have a slow machine, you *may* need to increase the delay.
+- **Forge:** Hide the "Integrated" text for the built-in Extensions.

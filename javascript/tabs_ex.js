@@ -6,14 +6,14 @@ function tryFindEnableToggle(extension) {
     // Try to find "enable" first
     for (let i = 0; i < ts.length; i++) {
         const label = ts[i].parentNode.querySelector('span');
-        if (label != null && label.innerHTML.toLowerCase().includes('enable'))
+        if (label != null && label.textContent.toLowerCase().includes('enable'))
             return ts[i];
     }
 
     // Then to find "active" second
     for (let i = 0; i < ts.length; i++) {
         const label = ts[i].parentNode.querySelector('span');
-        if (label != null && label.parentNode.querySelector('span').innerHTML.toLowerCase().includes('active'))
+        if (label != null && label.parentNode.querySelector('span').textContent.toLowerCase().includes('active'))
             return ts[i];
     }
 
@@ -72,6 +72,9 @@ function setup_tabs(mode, extensions) {
             extensions[tabKey][0].removeAttribute('id');
             extensions[tabKey][0].className = '';
             tabButton.appendChild(extensions[tabKey][0]);
+
+            if (isForge())
+                extensions[tabKey][0].textContent = extensions[tabKey][0].textContent.split('Integrated')[0].trim();
         }
 
         tabsContainer.appendChild(tabButton);
@@ -137,6 +140,10 @@ function getDelay() {
     return gradioApp().getElementById('setting_tabs_ex_delay').querySelector('input[type=range]').value;
 }
 
+function isForge() {
+    return gradioApp().getElementById('setting_tabs_ex_forge').querySelector('input[type=checkbox]').checked;
+}
+
 function saveConfigs() {
     const label = document.getElementById('TABSEX_LB').querySelector('textarea');
     const button = document.getElementById('TABSEX_BT');
@@ -190,7 +197,7 @@ function stealGradioCheckbox(MYcheckbox, MYspan) {
 
     label.removeChild(label.firstChild);
     label.insertBefore(MYcheckbox, label.firstChild);
-    label.querySelector('span').innerHTML = MYspan;
+    label.querySelector('span').textContent = MYspan;
 
     return label;
 }
