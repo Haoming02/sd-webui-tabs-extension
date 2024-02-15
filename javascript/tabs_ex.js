@@ -5,13 +5,15 @@ function tryFindEnableToggle(extension) {
 
     // Try to find "enable" first
     for (let i = 0; i < ts.length; i++) {
-        if (ts[i].parentNode.querySelector('span').innerHTML.toLowerCase().includes('enable'))
+        const label = ts[i].parentNode.querySelector('span');
+        if (label != null && label.innerHTML.toLowerCase().includes('enable'))
             return ts[i];
     }
 
     // Then to find "active" second
     for (let i = 0; i < ts.length; i++) {
-        if (ts[i].parentNode.querySelector('span').innerHTML.toLowerCase().includes('active'))
+        const label = ts[i].parentNode.querySelector('span');
+        if (label != null && label.parentNode.querySelector('span').innerHTML.toLowerCase().includes('active'))
             return ts[i];
     }
 

@@ -1,15 +1,18 @@
 ﻿# SD Webui Tabs Extension
-
 This is an Extension for the [Automatic1111 Webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui), which replaces the original Extension layout with a Tab System instead.
 
-## Intro
+> Now supports [Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge) as well!
+
+## Features
 This was achieved by moving the *contents* of each Extension from the "Accordion" *(the dropdown thingy)* into their own separate Tabs, 
 so that you only need to switch between each tab to change the settings, instead of scrolling all the way down and then all the way up every single time. 
 This is especially helpful if you usually have multiple Extensions active.
 Additionally, the `Scripts` section is also moved into a tab.
 
 When an Extension or a Script is enabled, the respective Tab button will turn green to indicate that. Furthermore, you can `Ctrl + Click` the Tab buttons to quickly toggle the Extensions.
-> This tries to find the first Checkbox with a label containing "enable" or "active" within the Extension. If one is not found, then this feature will not be available for said Extension!
+> This tries to find the first Checkbox with a label containing "enable" or "active" within the Extension. If one is not found, then this feature will not be available for said Extension.
+
+> For ControlNet, this only works on the first Unit. Still thinking of a better solution...
 
 <p align="center"><img src="demo.jpg" width=768></p>
 
