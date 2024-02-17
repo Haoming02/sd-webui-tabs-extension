@@ -250,11 +250,21 @@ onUiLoaded(async () => {
                     try {
                         while (extension.children.length < 2 || extension.children[1].children.length < 1 || extension.children[1].children[0].tagName.toLowerCase() !== 'span') {
                             if (extension.children[0].classList.contains('hidden')) {
-                                // InputAccordion
-                                extension = extension.children[1];
+                                if (extension.children[0].getAttribute('data-testid') == null) {
+                                    // InputAccordion
+                                    extension = extension.children[1];
 
-                                // Hide instead of Delete to avoid breaking references
-                                to_hide.push(container[i]);
+                                    // Hide instead of Delete to avoid breaking references
+                                    to_hide.push(container[i]);
+                                } else {
+                                    // sd-webui-fabric
+                                    for (let i = 1; i < extension.children.length; i++) {
+                                        if (extension.children[i].getAttribute('data-testid') == null) {
+                                            extension = extension.children[i];
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                             else
                                 extension = extension.children[0];
@@ -270,7 +280,11 @@ onUiLoaded(async () => {
                     const extension_name = extension.children[1].children[0];
                     const extension_content = extension.children[2];
 
-                    if (container[i].children[0].children[0].classList.contains('hidden')) {
+                    if (
+                        container[i].children[0].children[0].classList.contains('hidden')
+                        &&
+                        container[i].children[0].children[0].getAttribute('data-testid') == null
+                    ) {
                         // InputAccordion
                         extension_content.id = container[i].children[0].children[1].id;
 
