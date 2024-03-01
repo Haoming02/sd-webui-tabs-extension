@@ -174,20 +174,39 @@ function parseConfigs() {
     const label = document.getElementById('TABSEX_LB').querySelector('textarea');
     const lines = label.value.trim().split('\n');
 
-    if (lines[0].split(',')[0].trim().length > 0) {
-        // Old Configs...
+    try {
+        if (lines[0].split(',')[0].trim().length > 0)
+            throw "Old Configs...";
+
+        const L = lines.length;
+        const t2i = lines[0].split(',')[1].trim();
+        const i2i = lines[0].split(',')[2].trim();
+
+        for (let i = 1; i < L; i++) {
+            const values = lines[i].split(',').map(val => val.trim());
+            if (values.length > 3)
+                throw "Invalid Configs";
+
+            CONFIG[values[0]] = {};
+
+            if ((values[1] !== "left" && values[1] !== "right") ||
+                (values[2] !== "left" && values[2] !== "right"))
+                throw "Invalid Configs...";
+
+            CONFIG[values[0]][t2i] = values[1];
+            CONFIG[values[0]][i2i] = values[2];
+        }
+    } catch {
+        alert('[Tabs Extension] Something went wrong while parsing the configs. Restoring to defaults...');
+        for (const key in CONFIG)
+            delete CONFIG[key];
+
         CONFIG['tabs'] = {};
         CONFIG['tabs']['txt'] = 'left';
         CONFIG['tabs']['img'] = 'right';
         CONFIG['default'] = {};
         CONFIG['default']['txt'] = 'left';
         CONFIG['default']['img'] = 'right';
-    } else {
-        for (let i = 1; i < lines.length; i++) {
-            CONFIG[lines[i].split(',')[0].trim()] = {};
-            CONFIG[lines[i].split(',')[0].trim()][lines[0].split(',')[1].trim()] = lines[i].split(',')[1].trim();
-            CONFIG[lines[i].split(',')[0].trim()][lines[0].split(',')[2].trim()] = lines[i].split(',')[2].trim();
-        }
     }
 }
 
