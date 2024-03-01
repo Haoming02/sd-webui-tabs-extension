@@ -1,5 +1,6 @@
 #tabs_ex_txt, #tabs_ex_img {
     display: flex;
+    flex-direction: row;
     align-items: center;
     align-self: center;
     justify-content: center;
