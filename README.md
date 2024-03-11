@@ -9,7 +9,7 @@ so that you only need to switch between each tab to change the settings, instead
 This is especially helpful if you usually have multiple Extensions active.
 Additionally, the `Scripts` section is also moved into a tab.
 
-When an Extension or a Script is enabled, the respective Tab button will turn green to indicate that. Furthermore, you can `Ctrl + Click` the Tab buttons to quickly toggle the Extensions.
+When an Extension or a Script is enabled, the respective Tab button will turn green[*](#settings) to indicate that. Furthermore, you can `Ctrl + Click` the Tab buttons to quickly toggle the Extensions.
 > This tries to find the first Checkbox with a label containing "enable" or "active" within the Extension. If one is not found, then this feature will not be available for said Extension.
 
 > For ControlNet, this only works on the first Unit. Still thinking of a better solution...
@@ -41,4 +41,5 @@ After launching the Webui *(including the browser, not just the console)* with t
 ### Settings
 > The settings are in the **User interface** section
 - **Delay:** This Extension moves the contents after a tiny delay to prevent breaking some references. If you have a slow machine, you *may* need to increase the delay.
+- **Color:** The color used to indicate active extensions. *(**Default:** `YellowGreen`)*
 - **Forge:** Hide the "Integrated" text for the built-in Extensions.
