@@ -27,7 +27,20 @@ function rvExtName(input) {
     return input.split(version_pattern)[0].trim();
 }
 
-function setup_tabs(mode, extensions) {
+function sort_extensions(ext) {
+    const sorted = {};
+
+    Object.keys(CONFIG).forEach((key) => {
+        if (ext.hasOwnProperty(key))
+            sorted[key] = ext[key];
+    });
+
+    return sorted;
+}
+
+function setup_tabs(mode, ext) {
+
+    const extensions = doSort() ? sort_extensions(ext) : ext;
 
     const container = {};
     container['left'] = document.getElementById(mode + '2img_script_container');
@@ -60,8 +73,8 @@ function setup_tabs(mode, extensions) {
     const allButtons = {};
 
     Object.keys(extensions).forEach(tabKey => {
-        if (!CONFIG.hasOwnProperty(rvExtName(tabKey)))
-            CONFIG[rvExtName(tabKey)] = CONFIG['default'];
+        if (!CONFIG.hasOwnProperty(tabKey))
+            CONFIG[tabKey] = CONFIG['default'];
 
         const tabButton = document.createElement("button");
         tabButton.classList.add('tab_button');
@@ -93,7 +106,7 @@ function setup_tabs(mode, extensions) {
             allButtons[tabKey].classList.add('selected');
         });
 
-        contentContainer[CONFIG[rvExtName(tabKey)][mode]].appendChild(extensions[tabKey][1]);
+        contentContainer[CONFIG[tabKey][mode]].appendChild(extensions[tabKey][1]);
 
         if (tabKey !== 'Scripts') {
             const enableToggle = tryFindEnableToggle(extensions[tabKey][1]);
@@ -142,6 +155,10 @@ function getDelay() {
 
 function isForge() {
     return gradioApp().getElementById('setting_tabs_ex_forge').querySelector('input[type=checkbox]').checked;
+}
+
+function doSort() {
+    return gradioApp().getElementById('setting_tabs_ex_sort').querySelector('input[type=checkbox]').checked;
 }
 
 function saveConfigs() {
@@ -325,11 +342,11 @@ onUiLoaded(async () => {
                         // Copy the label to avoid breaking references
                         const extension_name_dummy = extension_name.cloneNode(true);
                         extension_name_dummy.querySelector('input[type=checkbox]')?.remove();
-                        extensions[extension_name_dummy.textContent.trim()] = [extension_name_dummy, extension_content];
+                        extensions[rvExtName(extension_name_dummy.textContent.trim())] = [extension_name_dummy, extension_content];
                     }
                     else {
                         extension_content.id = container[i].children[0].children[0].id;
-                        extensions[extension_name.textContent.trim()] = [extension_name, extension_content];
+                        extensions[rvExtName(extension_name.textContent.trim())] = [extension_name, extension_content];
                     }
                 }
             }

@@ -14,6 +14,8 @@ def add_ui_settings():
         "greenyellow", 'Color for active Extensions', section=section).link("CSS", "https://www.w3schools.com/cssref/css_colors.php").needs_reload_ui())
     shared.opts.add_option("tabs_ex_forge", shared.OptionInfo(
         False, 'Hide the "Integrated" text', section=section).info('for SD-Webui-Forge').needs_reload_ui())
+    shared.opts.add_option("tabs_ex_sort", shared.OptionInfo(
+        False, 'Sort Extensions based on Configs', section=section).needs_reload_ui())
 
 def load_ui_settings():
     ln = 27

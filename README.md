@@ -1,7 +1,7 @@
 ﻿# SD Webui Tabs Extension
 This is an Extension for the [Automatic1111 Webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui), which replaces the original Extension layout with a Tab System instead.
 
-> Now supports [Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge) as well!
+> Also supports [Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge)!
 
 ## Features
 This was achieved by moving the *contents* of each Extension from the "Accordion" *(the dropdown thingy)* into their own separate Tabs, 
@@ -41,5 +41,6 @@ After launching the Webui *(including the browser, not just the console)* with t
 ### Settings
 > The settings are in the **User interface** section
 - **Delay:** This Extension moves the contents after a tiny delay to prevent breaking some references. If you have a slow machine, you *may* need to increase the delay.
-- **Color:** The color used to indicate active extensions. *(**Default:** `YellowGreen`)*
+- **Color:** The color used to indicate active extensions. *(**Default:** `GreenYellow`)*
 - **Forge:** Hide the "Integrated" text for the built-in Extensions.
+- **Sort:** By default, extensions are sorted based on their appearance order *(**ie.** The extension folder names)*. Enable this to sort them based on the order in the `tab_configs.csv`.
