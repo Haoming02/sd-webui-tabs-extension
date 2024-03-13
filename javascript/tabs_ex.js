@@ -357,6 +357,15 @@ onUiLoaded(async () => {
                 }
             }
 
+            const extra_options = gradioApp().getElementById(`extra_options_${mode}2img`);
+            if (extra_options.childElementCount === 3) {
+                const extension_name = extra_options.children[1].children[0];
+                const extension_content = extra_options.children[2];
+                extension_content.id = `extra_options_${mode}2img`;
+                extensions[rvExtName(extension_name.textContent.trim())] = [extension_name, extension_content];
+                to_hide.push(extra_options.parentElement.parentElement);
+            }
+
             setup_tabs(mode, extensions);
         });
 
