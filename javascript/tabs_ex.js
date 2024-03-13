@@ -31,8 +31,14 @@ function sort_extensions(ext) {
     const sorted = {};
 
     Object.keys(CONFIG).forEach((key) => {
-        if (ext.hasOwnProperty(key))
+        if (ext.hasOwnProperty(key)) {
             sorted[key] = ext[key];
+            delete ext[key];
+        }
+    });
+
+    Object.keys(ext).forEach((key) => {
+        sorted[key] = ext[key];
     });
 
     return sorted;
