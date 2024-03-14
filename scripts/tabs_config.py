@@ -7,12 +7,12 @@ CONFIG_FILE = os.path.join(scripts.basedir(), "tab_configs.csv")
 
 
 def write_data(data: str):
-    with open(CONFIG_FILE, "w") as csv_file:
+    with open(CONFIG_FILE, "w", encoding="utf-8") as csv_file:
         csv_file.write(data)
 
 def load_data():
     try:
-        with open(CONFIG_FILE, "r") as csv_file:
+        with open(CONFIG_FILE, "r", encoding="utf-8") as csv_file:
             data = csv_file.read()
             return data
 
