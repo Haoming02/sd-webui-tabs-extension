@@ -85,11 +85,14 @@ function setup_tabs(mode, ext) {
         const tabButton = document.createElement("button");
         tabButton.classList.add('tab_button');
 
-        if (tabKey === 'Scripts')
-            tabButton.textContent = 'Scripts';
-        else {
+        if (tabKey === 'Scripts') {
+            const scriptSpan = document.createElement('span');
+            scriptSpan.textContent = 'Scripts';
+            scriptSpan.className = 'tab_label';
+            tabButton.appendChild(scriptSpan);
+        } else {
             extensions[tabKey][0].removeAttribute('id');
-            extensions[tabKey][0].className = '';
+            extensions[tabKey][0].className = 'tab_label';
             tabButton.appendChild(extensions[tabKey][0]);
 
             if (isForge())
