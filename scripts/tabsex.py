@@ -16,6 +16,8 @@ def add_ui_settings():
         False, 'Hide the "Integrated" text', section=section).info('for SD-Webui-Forge').needs_reload_ui())
     shared.opts.add_option("tabs_ex_sort", shared.OptionInfo(
         False, 'Sort Extensions based on Configs', section=section).needs_reload_ui())
+    shared.opts.add_option("tabs_ex_open", shared.OptionInfo(
+        True, 'Automatically expand first extension tab on start', section=section).needs_reload_ui())
 
 def load_ui_settings():
     ln = 27

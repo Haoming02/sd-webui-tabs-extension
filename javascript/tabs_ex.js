@@ -145,8 +145,10 @@ function setup_tabs(mode, ext) {
     });
 
     // Select the first option at the start
-    Object.values(extensions)[0][1].style.display = "block";
-    Object.values(allButtons)[0].classList.add('selected');
+    if (autoOpen()) {
+        Object.values(extensions)[0][1].style.display = "block";
+        Object.values(allButtons)[0].classList.add('selected');
+    }
 
     // Check for active Script
     const scriptsDropdown = extensions['Scripts'][1].querySelector('input');
@@ -170,6 +172,10 @@ function isForge() {
 
 function doSort() {
     return gradioApp().getElementById('setting_tabs_ex_sort').querySelector('input[type=checkbox]').checked;
+}
+
+function autoOpen() {
+    return gradioApp().getElementById('setting_tabs_ex_open').querySelector('input[type=checkbox]').checked;
 }
 
 function saveConfigs() {
