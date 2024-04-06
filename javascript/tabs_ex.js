@@ -100,6 +100,10 @@ function setup_tabs(mode, ext) {
         allButtons[tabKey] = tabButton;
 
         tabButton.addEventListener("click", () => {
+            if (allButtons[tabKey].classList.contains('selected')) {
+                extensions[tabKey][1].style.display = "none";
+                allButtons[tabKey].classList.remove('selected');
+            } else {
             Object.values(extensions).forEach(tabDiv => {
                 tabDiv[1].style.display = "none";
             });
@@ -110,6 +114,7 @@ function setup_tabs(mode, ext) {
 
             extensions[tabKey][1].style.display = "block";
             allButtons[tabKey].classList.add('selected');
+            }
         });
 
         contentContainer[CONFIG[tabKey][mode]].appendChild(extensions[tabKey][1]);
