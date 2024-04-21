@@ -85,11 +85,14 @@ function setup_tabs(mode, ext) {
         const tabButton = document.createElement("button");
         tabButton.classList.add('tab_button');
 
-        if (tabKey === 'Scripts')
-            tabButton.textContent = 'Scripts';
-        else {
+        if (tabKey === 'Scripts') {
+            const scriptSpan = document.createElement('span');
+            scriptSpan.textContent = 'Scripts';
+            scriptSpan.className = 'tab_label';
+            tabButton.appendChild(scriptSpan);
+        } else {
             extensions[tabKey][0].removeAttribute('id');
-            extensions[tabKey][0].className = '';
+            extensions[tabKey][0].className = 'tab_label';
             tabButton.appendChild(extensions[tabKey][0]);
 
             if (isForge())
@@ -99,17 +102,25 @@ function setup_tabs(mode, ext) {
         tabsContainer.appendChild(tabButton);
         allButtons[tabKey] = tabButton;
 
-        tabButton.addEventListener("click", () => {
-            Object.values(extensions).forEach(tabDiv => {
-                tabDiv[1].style.display = "none";
-            });
+        tabButton.addEventListener("click", (e) => {
+            if (e.ctrlKey)
+                return;
 
-            Object.values(allButtons).forEach(tabBtn => {
-                tabBtn.classList.remove('selected');
-            });
+            if (allButtons[tabKey].classList.contains('selected')) {
+                extensions[tabKey][1].style.display = "none";
+                allButtons[tabKey].classList.remove('selected');
+            } else {
+                Object.values(extensions).forEach(tabDiv => {
+                    tabDiv[1].style.display = "none";
+                });
 
-            extensions[tabKey][1].style.display = "block";
-            allButtons[tabKey].classList.add('selected');
+                Object.values(allButtons).forEach(tabBtn => {
+                    tabBtn.classList.remove('selected');
+                });
+
+                extensions[tabKey][1].style.display = "block";
+                allButtons[tabKey].classList.add('selected');
+            }
         });
 
         contentContainer[CONFIG[tabKey][mode]].appendChild(extensions[tabKey][1]);
@@ -119,16 +130,18 @@ function setup_tabs(mode, ext) {
 
             if (enableToggle != null) {
                 // Change Color if Enabled
-                enableToggle.addEventListener('change', () => {
-                    if (enableToggle.checked)
-                        allButtons[tabKey].classList.add('active');
-                    else
-                        allButtons[tabKey].classList.remove('active');
+                ["input", "change"].forEach(ev => {
+                    enableToggle.addEventListener(ev, () => {
+                        if (enableToggle.checked)
+                            allButtons[tabKey].classList.add('active');
+                        else
+                            allButtons[tabKey].classList.remove('active');
+                    });
                 });
 
                 // Ctrl + Click = Toggle
                 allButtons[tabKey].addEventListener('click', (e) => {
-                    if (window.event.ctrlKey)
+                    if (e.ctrlKey)
                         enableToggle.click();
                 });
 
@@ -140,8 +153,10 @@ function setup_tabs(mode, ext) {
     });
 
     // Select the first option at the start
-    Object.values(extensions)[0][1].style.display = "block";
-    Object.values(allButtons)[0].classList.add('selected');
+    if (autoOpen()) {
+        Object.values(extensions)[0][1].style.display = "block";
+        Object.values(allButtons)[0].classList.add('selected');
+    }
 
     // Check for active Script
     const scriptsDropdown = extensions['Scripts'][1].querySelector('input');
@@ -165,6 +180,10 @@ function isForge() {
 
 function doSort() {
     return gradioApp().getElementById('setting_tabs_ex_sort').querySelector('input[type=checkbox]').checked;
+}
+
+function autoOpen() {
+    return gradioApp().getElementById('setting_tabs_ex_open').querySelector('input[type=checkbox]').checked;
 }
 
 function saveConfigs() {
