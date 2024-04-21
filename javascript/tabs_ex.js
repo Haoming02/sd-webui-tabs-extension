@@ -102,21 +102,24 @@ function setup_tabs(mode, ext) {
         tabsContainer.appendChild(tabButton);
         allButtons[tabKey] = tabButton;
 
-        tabButton.addEventListener("click", () => {
+        tabButton.addEventListener("click", (e) => {
+            if (e.ctrlKey)
+                return;
+
             if (allButtons[tabKey].classList.contains('selected')) {
                 extensions[tabKey][1].style.display = "none";
                 allButtons[tabKey].classList.remove('selected');
             } else {
-            Object.values(extensions).forEach(tabDiv => {
-                tabDiv[1].style.display = "none";
-            });
+                Object.values(extensions).forEach(tabDiv => {
+                    tabDiv[1].style.display = "none";
+                });
 
-            Object.values(allButtons).forEach(tabBtn => {
-                tabBtn.classList.remove('selected');
-            });
+                Object.values(allButtons).forEach(tabBtn => {
+                    tabBtn.classList.remove('selected');
+                });
 
-            extensions[tabKey][1].style.display = "block";
-            allButtons[tabKey].classList.add('selected');
+                extensions[tabKey][1].style.display = "block";
+                allButtons[tabKey].classList.add('selected');
             }
         });
 
@@ -127,16 +130,18 @@ function setup_tabs(mode, ext) {
 
             if (enableToggle != null) {
                 // Change Color if Enabled
-                enableToggle.addEventListener('change', () => {
-                    if (enableToggle.checked)
-                        allButtons[tabKey].classList.add('active');
-                    else
-                        allButtons[tabKey].classList.remove('active');
+                ["input", "change"].forEach(ev => {
+                    enableToggle.addEventListener(ev, () => {
+                        if (enableToggle.checked)
+                            allButtons[tabKey].classList.add('active');
+                        else
+                            allButtons[tabKey].classList.remove('active');
+                    });
                 });
 
                 // Ctrl + Click = Toggle
                 allButtons[tabKey].addEventListener('click', (e) => {
-                    if (window.event.ctrlKey)
+                    if (e.ctrlKey)
                         enableToggle.click();
                 });
 
