@@ -350,6 +350,8 @@ onUiLoaded(async () => {
                         extension_content.id = container[i].children[0].children[1].id;
 
                         const checkbox = extension_name.querySelector('input[type=checkbox]');
+                        if (!checkbox)
+                            continue;
 
                         // Create a dummy Checkbox linked to the original Checkbox
                         const checkbox_dummy = checkbox.cloneNode();
