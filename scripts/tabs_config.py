@@ -10,6 +10,7 @@ def write_data(data: str):
     with open(CONFIG_FILE, "w", encoding="utf-8") as csv_file:
         csv_file.write(data)
 
+
 def load_data():
     try:
         with open(CONFIG_FILE, "r", encoding="utf-8") as csv_file:
@@ -24,7 +25,9 @@ def load_data():
             csv_file.write(DEFAULT_VALUE)
             return DEFAULT_VALUE
 
+
 data = load_data()
+
 
 class TabsEx(scripts.Script):
     def title(self):
