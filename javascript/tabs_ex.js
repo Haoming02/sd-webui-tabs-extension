@@ -1,5 +1,10 @@
 const CONFIG = {};
 
+const ENABLE_CHECKER = {
+    "txt": [],
+    "img": []
+};
+
 function tryFindEnableToggle(extension) {
     const ts = extension.querySelectorAll('input[type=checkbox]');
 
@@ -139,6 +144,8 @@ function setup_tabs(mode, ext) {
                     });
                 });
 
+                ENABLE_CHECKER[mode].push([enableToggle, allButtons[tabKey]]);
+
                 // Ctrl + Click = Toggle
                 allButtons[tabKey].addEventListener('click', (e) => {
                     if (e.ctrlKey)
@@ -168,6 +175,17 @@ function setup_tabs(mode, ext) {
         else
             allButtons['Scripts'].classList.add('active');
     });
+
+    const options = {
+        root: document.documentElement,
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        if (entries[0].intersectionRatio > 0)
+            verifyTabsEnable(mode);
+    }, options);
+
+    observer.observe(tabsContainer);
 }
 
 function getDelay() {
@@ -261,6 +279,19 @@ function stealGradioCheckbox(MYcheckbox, MYspan) {
     label.querySelector('span').textContent = MYspan;
 
     return label;
+}
+
+function verifyTabsEnable(mode) {
+    setTimeout(() => {
+
+        for (const [toggle, button] of ENABLE_CHECKER[mode]) {
+            if (toggle.checked)
+                button.classList.add('active');
+            else
+                button.classList.remove('active');
+        }
+
+    }, 50 * getDelay());
 }
 
 onUiLoaded(async () => {
