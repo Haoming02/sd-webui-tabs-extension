@@ -15,39 +15,40 @@ body {
     background-color: var(--background-fill-secondary);
 }
 
-    #tabs_ex_txt .tab_button, #tabs_ex_img .tab_button {
-        margin: 4px;
-        padding: 2px 6px;
-        border: 2px;
-        border-style: ridge;
-        color: var(--button-secondary-text-color);
-        border-color: var(--block-info-text-color);
-        background-color: transparent;
-        transition: all 0.1s linear;
-    }
-
-        #tabs_ex_txt .tab_button:hover, #tabs_ex_img .tab_button:hover {
-            box-shadow: 0px 0px 8px var(--button-secondary-text-color);
-        }
-
-        #tabs_ex_txt .tab_button.selected, #tabs_ex_img .tab_button.selected {
-            background-color: var(--border-color-accent);
-        }
-
-        #tabs_ex_txt .tab_button.active, #tabs_ex_img .tab_button.active {
-            color: var(--tabs-highlight-color);
-
-            /* Simulate Bold, without affecting the Width */
-            text-shadow: 0px 0px 2px var(--tabs-highlight-color);
-        }
-
-#tabs_ex_content_txt_right, #tabs_ex_content_img_left {
-    padding: 1em;
-    background-color: var(--block-background-fill);
-    border-radius: 8px;
+#tabs_ex_txt .tab_button, #tabs_ex_img .tab_button {
+    margin: 4px;
+    padding: 2px 6px;
+    border: 2px;
+    border-style: ridge;
+    color: var(--button-secondary-text-color);
+    border-color: var(--block-info-text-color);
+    background-color: transparent;
+    transition: all 0.1s linear;
 }
 
-#tabs_ex_content_txt_left, #tabs_ex_content_img_right {
+#tabs_ex_txt .tab_button:hover, #tabs_ex_img .tab_button:hover {
+    box-shadow: 0px 0px 8px var(--button-secondary-text-color);
+}
+
+#tabs_ex_txt .tab_button.selected, #tabs_ex_img .tab_button.selected {
+    background-color: var(--border-color-accent);
+}
+
+#tabs_ex_txt .tab_button.active, #tabs_ex_img .tab_button.active {
+    color: var(--tabs-highlight-color);
+
+    /* Simulate Bold, without affecting the Width */
+    text-shadow: 0px 0px 2px var(--tabs-highlight-color);
+}
+
+#tabs_ex_content-txt2img-left,
+#tabs_ex_content-txt2img-right,
+#tabs_ex_content-txt2img-above,
+#tabs_ex_content-txt2img-below,
+#tabs_ex_content-img2img-left,
+#tabs_ex_content-img2img-right,
+#tabs_ex_content-img2img-above,
+#tabs_ex_content-img2img-below {
     padding: 1em;
     background-color: var(--block-background-fill);
     border-radius: 8px;

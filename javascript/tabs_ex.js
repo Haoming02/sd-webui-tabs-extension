@@ -1,435 +1,248 @@
-const CONFIG = {};
+class TabsExtension {
 
-const ENABLE_CHECKER = {
-    "txt": [],
-    "img": []
-};
+    static #config;
 
-function tryFindEnableToggle(extension) {
-    const ts = extension.querySelectorAll('input[type=checkbox]');
-
-    // Try to find "enable" first
-    for (let i = 0; i < ts.length; i++) {
-        const label = ts[i].parentNode.querySelector('span');
-        if (label != null && label.textContent.toLowerCase().includes('enable'))
-            return ts[i];
-    }
-
-    // Then to find "active" second
-    for (let i = 0; i < ts.length; i++) {
-        const label = ts[i].parentNode.querySelector('span');
-        if (label != null && label.parentNode.querySelector('span').textContent.toLowerCase().includes('active'))
-            return ts[i];
-    }
-
-    // Null otherwise
-    return null;
-}
-
-function rvExtName(input) {
-    // Remove version info from Extension Name (since it will keep updating...)
-    const version_pattern = /([Vv](er)?(\.|\s)*\d)/;
-    return input.split(version_pattern)[0].trim();
-}
-
-function sort_extensions(ext) {
-    const sorted = {};
-
-    Object.keys(CONFIG).forEach((key) => {
-        if (ext.hasOwnProperty(key)) {
-            sorted[key] = ext[key];
-            delete ext[key];
-        }
-    });
-
-    Object.keys(ext).forEach((key) => {
-        sorted[key] = ext[key];
-    });
-
-    return sorted;
-}
-
-function setup_tabs(mode, ext) {
-
-    const extensions = doSort() ? sort_extensions(ext) : ext;
-
-    const container = {};
-    container['left'] = document.getElementById(mode + '2img_script_container');
-    container['right'] = document.getElementById(mode + '2img_results');
-
-    // Div to host the buttons
-    const tabsContainer = document.createElement("div");
-    tabsContainer.id = 'tabs_ex_' + mode;
-
-    container[CONFIG['tabs'][mode]].appendChild(tabsContainer);
-
-    // Div to host the contents
-    const contentContainer = {};
-
-    var height = 0;
-    Object.keys(extensions).forEach(tabKey => {
-        extensions[tabKey][1].style.display = 'block';
-        height = Math.max(height, extensions[tabKey][1].clientHeight);
-        extensions[tabKey][1].style.display = 'none';
-    });
-
-    ['left', 'right'].forEach((side) => {
-        contentContainer[side] = document.createElement("div");
-        contentContainer[side].id = `tabs_ex_content_${mode}_${side}`;
-        contentContainer[side].style.overflow = "visible";
-        contentContainer[side].style.minHeight = `calc(${height}px + 1em)`;
-        container[side].appendChild(contentContainer[side]);
-    });
-
-    const allButtons = {};
-
-    Object.keys(extensions).forEach(tabKey => {
-        if (!CONFIG.hasOwnProperty(tabKey))
-            CONFIG[tabKey] = CONFIG['default'];
-
-        const tabButton = document.createElement("button");
-        tabButton.classList.add('tab_button');
-
-        if (tabKey === 'Scripts') {
-            const scriptSpan = document.createElement('span');
-            scriptSpan.textContent = 'Scripts';
-            scriptSpan.className = 'tab_label';
-            tabButton.appendChild(scriptSpan);
-        } else {
-            extensions[tabKey][0].removeAttribute('id');
-            extensions[tabKey][0].className = 'tab_label';
-            tabButton.appendChild(extensions[tabKey][0]);
-
-            if (isForge())
-                extensions[tabKey][0].textContent = extensions[tabKey][0].textContent.split('Integrated')[0].trim();
-        }
-
-        tabsContainer.appendChild(tabButton);
-        allButtons[tabKey] = tabButton;
-
-        tabButton.addEventListener("click", (e) => {
-            if (e.ctrlKey)
-                return;
-
-            if (allButtons[tabKey].classList.contains('selected')) {
-                extensions[tabKey][1].style.display = "none";
-                allButtons[tabKey].classList.remove('selected');
-            } else {
-                Object.values(extensions).forEach(tabDiv => {
-                    tabDiv[1].style.display = "none";
-                });
-
-                Object.values(allButtons).forEach(tabBtn => {
-                    tabBtn.classList.remove('selected');
-                });
-
-                extensions[tabKey][1].style.display = "block";
-                allButtons[tabKey].classList.add('selected');
-            }
-        });
-
-        contentContainer[CONFIG[tabKey][mode]].appendChild(extensions[tabKey][1]);
-
-        if (tabKey !== 'Scripts') {
-            const enableToggle = tryFindEnableToggle(extensions[tabKey][1]);
-
-            if (enableToggle != null) {
-                // Change Color if Enabled
-                ["input", "change"].forEach(ev => {
-                    enableToggle.addEventListener(ev, () => {
-                        if (enableToggle.checked)
-                            allButtons[tabKey].classList.add('active');
-                        else
-                            allButtons[tabKey].classList.remove('active');
-                    });
-                });
-
-                ENABLE_CHECKER[mode].push([enableToggle, allButtons[tabKey]]);
-
-                // Ctrl + Click = Toggle
-                allButtons[tabKey].addEventListener('click', (e) => {
-                    if (e.ctrlKey)
-                        enableToggle.click();
-                });
-
-                // Check if already Enabled on start up
-                if (enableToggle.checked)
-                    allButtons[tabKey].classList.add('active');
-            }
-        }
-    });
-
-    // Select the first option at the start
-    if (autoOpen()) {
-        Object.values(extensions)[0][1].style.display = "block";
-        Object.values(allButtons)[0].classList.add('selected');
-    }
-
-    // Check for active Script
-    const scriptsDropdown = extensions['Scripts'][1].querySelector('input');
-    const tab = document.getElementById('tab_' + mode + '2img');
-
-    tab.addEventListener('click', () => {
-        if (scriptsDropdown.value === 'None')
-            allButtons['Scripts'].classList.remove('active');
-        else
-            allButtons['Scripts'].classList.add('active');
-    });
-
-    const options = {
-        root: document.documentElement,
+    static #active_tab = {
+        "txt": undefined,
+        "img": undefined
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        if (entries[0].intersectionRatio > 0)
-            verifyTabsEnable(mode);
-    }, options);
+    static #enable_pairs = {
+        "txt": [],
+        "img": []
+    };
 
-    observer.observe(tabsContainer);
-}
+    /**
+     * @param {Element} extension
+     * @returns {Element}
+     */
+    static #tryFindEnableToggle(extension) {
+        const checkboxs = Array.from(extension.querySelectorAll('input[type=checkbox]'));
+        if (checkboxs.length === 0)
+            return null;
 
-function getDelay() {
-    return gradioApp().getElementById('setting_tabs_ex_delay').querySelector('input[type=range]').value;
-}
+        const labels = checkboxs.map(checkbox =>
+            checkbox.parentNode.querySelector('span')?.textContent.toLowerCase());
 
-function isForge() {
-    return gradioApp().getElementById('setting_tabs_ex_forge').querySelector('input[type=checkbox]').checked;
-}
-
-function doSort() {
-    return gradioApp().getElementById('setting_tabs_ex_sort').querySelector('input[type=checkbox]').checked;
-}
-
-function autoOpen() {
-    return gradioApp().getElementById('setting_tabs_ex_open').querySelector('input[type=checkbox]').checked;
-}
-
-function saveConfigs() {
-    const label = document.getElementById('TABSEX_LB').querySelector('textarea');
-    const button = document.getElementById('TABSEX_BT');
-
-    const keys = Object.keys(CONFIG);
-    var data = ",txt,img\n";
-
-    for (let i = 0; i < keys.length; i++) {
-        data += keys[i];
-        data += ',';
-        data += CONFIG[keys[i]]['txt'];
-        data += ',';
-        data += CONFIG[keys[i]]['img'];
-        data += '\n';
-    }
-
-    label.value = data;
-    updateInput(label);
-
-    setTimeout(() => {
-        button.click();
-        button.parentElement.parentElement.remove();
-    }, getDelay());
-}
-
-function parseConfigs() {
-    // Convert csv into dict
-    const label = document.getElementById('TABSEX_LB').querySelector('textarea');
-    const lines = label.value.trim().split('\n');
-
-    try {
-        if (lines[0].split(',')[0].trim().length > 0)
-            throw "Old Configs...";
-
-        const L = lines.length;
-        const t2i = lines[0].split(',')[1].trim();
-        const i2i = lines[0].split(',')[2].trim();
-
-        for (let i = 1; i < L; i++) {
-            const values = lines[i].split(',').map(val => val.trim());
-            if (values.length > 3)
-                throw "Invalid Configs";
-
-            CONFIG[values[0]] = {};
-
-            if ((values[1] !== "left" && values[1] !== "right") ||
-                (values[2] !== "left" && values[2] !== "right"))
-                throw "Invalid Configs...";
-
-            CONFIG[values[0]][t2i] = values[1];
-            CONFIG[values[0]][i2i] = values[2];
-        }
-    } catch {
-        alert('[Tabs Extension] Something went wrong while parsing the configs. Restoring to defaults...');
-        for (const key in CONFIG)
-            delete CONFIG[key];
-
-        CONFIG['tabs'] = {};
-        CONFIG['tabs']['txt'] = 'left';
-        CONFIG['tabs']['img'] = 'right';
-        CONFIG['default'] = {};
-        CONFIG['default']['txt'] = 'left';
-        CONFIG['default']['img'] = 'right';
-    }
-}
-
-function stealGradioCheckbox(MYcheckbox, MYspan) {
-    const setting = document.getElementById('tab_settings');
-    const label = setting.querySelector('input[type=checkbox]').parentElement.cloneNode(true);
-
-    label.removeChild(label.firstChild);
-    label.insertBefore(MYcheckbox, label.firstChild);
-    label.querySelector('span').textContent = MYspan;
-
-    return label;
-}
-
-function verifyTabsEnable(mode) {
-    setTimeout(() => {
-
-        for (const [toggle, button] of ENABLE_CHECKER[mode]) {
-            if (toggle.checked)
-                button.classList.add('active');
-            else
-                button.classList.remove('active');
+        // Try to find "enable" first
+        for (let i = 0; i < labels.length; i++) {
+            if (labels[i]?.includes('enable'))
+                return checkboxs[i];
         }
 
-    }, 50 * getDelay());
-}
+        // Then to find "active" second
+        for (let i = 0; i < labels.length; i++) {
+            if (labels[i]?.includes('active'))
+                return checkboxs[i];
+        }
 
-onUiLoaded(async () => {
+        // Null otherwise
+        return null;
+    }
 
-    parseConfigs();
+    /** @param {string} mode 'txt' | 'img' */
+    static #verifyTabsEnable(mode) {
+        setTimeout(() => {
 
-    // Delay to avoid breaking references during init
-    setTimeout(() => {
-
-        const to_delete = [];
-        const to_hide = [];
-
-        // Works for both txt2img & img2img
-        ['txt', 'img'].forEach((mode) => {
-
-            // Get all Extensions & Scripts
-            const container = document.getElementById(mode + '2img_script_container').children[0].children;
-
-            const extensions = {};
-
-            for (let i = 0; i < container.length; i++) {
-
-                // Scripts Dropdown
-                if (container[i].classList.contains('form')) {
-                    container[i].children[0].style.margin = '10px 0px';
-
-                    const script_block = document.createElement("div");
-                    script_block.style.display = 'none';
-                    script_block.appendChild(container[i].children[0]);
-
-                    // Move all Scripts
-                    for (let x = container.length - 1; x > i; x--)
-                        script_block.appendChild(container[x]);
-
-                    extensions['Scripts'] = [null, script_block];
-                    to_delete.push(container[i]);
-
-                    break;
-                }
-
-                // Grab the actual Extension content
-                var extension = container[i].children[0];
-
-                // Ignore Extension with no UI
-                if (extension.children.length > 0) {
-
-                    // Some Extensions have less/more layers of div
-                    try {
-                        while (extension.children.length < 2 || extension.children[1].children.length < 1 || extension.children[1].children[0].tagName.toLowerCase() !== 'span') {
-                            if (extension.children[0].classList.contains('hidden')) {
-                                if (extension.children[0].getAttribute('data-testid') == null) {
-                                    // InputAccordion
-                                    extension = extension.children[1];
-
-                                    // Hide instead of Delete to avoid breaking references
-                                    to_hide.push(container[i]);
-                                } else {
-                                    // sd-webui-fabric
-                                    for (let i = 1; i < extension.children.length; i++) {
-                                        if (extension.children[i].getAttribute('data-testid') == null) {
-                                            extension = extension.children[i];
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                                extension = extension.children[0];
-                        }
-                    } catch {
-                        // Unrecognized Structure
-                        continue;
-                    }
-
-                    if (!to_hide.includes(container[i]))
-                        to_delete.push(container[i]);
-
-                    const extension_name = extension.children[1].children[0];
-                    const extension_content = extension.children[2];
-
-                    if (
-                        container[i].children[0].children[0].classList.contains('hidden')
-                        &&
-                        container[i].children[0].children[0].getAttribute('data-testid') == null
-                    ) {
-                        // InputAccordion
-                        extension_content.id = container[i].children[0].children[1].id;
-
-                        const checkbox = extension_name.querySelector('input[type=checkbox]');
-                        if (!checkbox)
-                            continue;
-
-                        // Create a dummy Checkbox linked to the original Checkbox
-                        const checkbox_dummy = checkbox.cloneNode();
-                        checkbox_dummy.addEventListener('change', () => {
-                            if (checkbox.checked !== checkbox_dummy.checked)
-                                checkbox.click();
-                        });
-
-                        const label = stealGradioCheckbox(checkbox_dummy, 'Enable');
-                        label.style.margin = "1em 0px";
-
-                        // Add to the top as the "Enable" Checkbox
-                        extension_content.insertBefore(label, extension_content.firstChild);
-
-                        // Copy the label to avoid breaking references
-                        const extension_name_dummy = extension_name.cloneNode(true);
-                        extension_name_dummy.querySelector('input[type=checkbox]')?.remove();
-                        extensions[rvExtName(extension_name_dummy.textContent.trim())] = [extension_name_dummy, extension_content];
-                    }
-                    else {
-                        extension_content.id = container[i].children[0].children[0].id;
-                        extensions[rvExtName(extension_name.textContent.trim())] = [extension_name, extension_content];
-                    }
-                }
+            for (const [toggle, button] of this.#enable_pairs[mode]) {
+                if (toggle.checked)
+                    button.classList.add('active');
+                else
+                    button.classList.remove('active');
             }
 
-            const extra_options = gradioApp().getElementById(`extra_options_${mode}2img`);
-            if (extra_options != null && extra_options.childElementCount === 3) {
-                const extension_name = extra_options.children[1].children[0];
-                const extension_content = extra_options.children[2];
-                extension_content.id = `extra_options_${mode}2img`;
-                extensions[rvExtName(extension_name.textContent.trim())] = [extension_name, extension_content];
-                to_hide.push(extra_options.parentElement.parentElement);
-            }
+        }, 10 * this.#config.delay);
+    }
 
-            setup_tabs(mode, extensions);
+    /**
+     * @param {object} extensions
+     * @param {object} configs
+     * @returns {object}
+     */
+    static #sort_extensions(extensions, configs) {
+        if (!this.#config.sort)
+            return extensions;
+
+        const sorted = {};
+
+        const keys = Array.from(Object.keys(configs));
+        keys.forEach((key) => {
+            if (extensions.hasOwnProperty(key)) {
+                sorted[key] = extensions[key];
+                delete extensions[key];
+            }
         });
 
+        Object.keys(extensions).forEach((key) => {
+            sorted[key] = extensions[key];
+        });
+
+        return sorted;
+    }
+
+    /**
+     * le Main Logics
+     * @param {string} mode 'txt' | 'img'
+     * @param {{string: Element}} extensions
+     * @param {{string: string}} configs
+     */
+    static #setup_tabs(mode, extensions, configs) {
+
+        const container = {
+            'left': document.getElementById(`${mode}2img_script_container`),
+            'right': document.getElementById(`${mode}2img_results`)
+        };
+
+        const mainSide = configs['tabs'];
+        const oppSide = (mainSide === "left") ? 'right' : 'left'
+
+        /** `<div>` to host the contents */
+        const contentContainers = {};
+
+        ['above', 'left', 'below', 'right'].forEach(side => {
+            contentContainers[side] = document.createElement("div");
+            contentContainers[side].id = `tabs_ex_content-${mode}2img-${side}`;
+            contentContainers[side].style.overflow = "visible";
+        });
+
+        container[mainSide].appendChild(contentContainers['above']);
+        container[mainSide].appendChild(contentContainers[mainSide]);
+        container[mainSide].appendChild(contentContainers['below']);
+        container[oppSide].appendChild(contentContainers[oppSide]);
+
+        /** `<div>` to host the buttons */
+        const tabsContainer = document.createElement("div");
+        tabsContainer.id = `tabs_ex_${mode}`;
+
+        contentContainers[configs['tabs']].appendChild(tabsContainer);
+
+        const allButtons = {};
+
+        Object.keys(extensions).forEach(tabKey => {
+            // New Extension
+            if (!configs.hasOwnProperty(tabKey))
+                configs[tabKey] = configs['default'];
+
+            else {
+                const pos = configs[tabKey];
+                if (pos === "above" || pos === "below") {
+                    contentContainers[pos].appendChild(extensions[tabKey]);
+                    extensions[tabKey].style.display = "block";
+                    return;
+                }
+            }
+
+            const btnSpan = document.createElement('span');
+            btnSpan.className = 'tab_label';
+            btnSpan.textContent = (!this.#config.forge) ? tabKey :
+                tabKey.split('Integrated')[0].trim();
+
+            const tabButton = document.createElement("button");
+            tabButton.classList.add('tab_button');
+            tabButton.appendChild(btnSpan);
+
+            tabsContainer.appendChild(tabButton);
+            allButtons[tabKey] = tabButton;
+
+            tabButton.addEventListener("click", (e) => {
+                if (e.ctrlKey)
+                    return;
+
+                if (this.#active_tab[mode] != undefined) {
+                    allButtons[this.#active_tab[mode]].classList.remove('selected');
+                    extensions[this.#active_tab[mode]].style.display = "none";
+                }
+
+                this.#active_tab[mode] = (this.#active_tab[mode] === tabKey) ? undefined : tabKey;
+
+                if (this.#active_tab[mode] != undefined) {
+                    allButtons[this.#active_tab[mode]].classList.add('selected');
+                    extensions[this.#active_tab[mode]].style.display = "block";
+                }
+            });
+
+            contentContainers[configs[tabKey]].appendChild(extensions[tabKey]);
+
+            if (tabKey === 'Scripts')
+                return;
+
+            const enableToggle = this.#tryFindEnableToggle(extensions[tabKey]);
+            if (enableToggle == null)
+                return;
+
+            // Change Color if Enabled
+            enableToggle.addEventListener("change", () => {
+                if (enableToggle.checked)
+                    allButtons[tabKey].classList.add('active');
+                else
+                    allButtons[tabKey].classList.remove('active');
+            });
+
+            this.#enable_pairs[mode].push([enableToggle, allButtons[tabKey]]);
+
+            // Ctrl + Click = Toggle
+            allButtons[tabKey].addEventListener("click", (e) => {
+                if (e.ctrlKey)
+                    enableToggle.click();
+            });
+
+            // Check if already Enabled on start up
+            if (enableToggle.checked)
+                allButtons[tabKey].classList.add('active');
+
+        });
+
+        // Hide empty containers
+        ['above', 'left', 'below', 'right'].forEach(side => {
+            if (contentContainers[side].children.length === 0)
+                contentContainers[side].style.display = "none";
+        });
+
+        // Select the first option at the start
+        if (this.#config.open)
+            Object.values(allButtons)[0].click();
+
+        // Check for active Script
+        const scriptsDropdown = extensions['Scripts'].querySelector('input');
+
+        const options = { root: document.documentElement };
+        const observer = new IntersectionObserver((entries, observer) => {
+            if (entries[0].intersectionRatio > 0) {
+                this.#verifyTabsEnable(mode);
+
+                if (scriptsDropdown.value === 'None')
+                    allButtons['Scripts']?.classList.remove('active');
+                else
+                    allButtons['Scripts']?.classList.add('active');
+            }
+        }, options);
+
+        // When switching tabs, refresh the active status
+        observer.observe(tabsContainer);
+
+        return configs;
+    }
+
+    static init() {
+        this.#config = new TabsExtensionConfigs();
+        const configs = this.#config.parseConfigs();
+        const processed_configs = {};
+
         setTimeout(() => {
-            for (let i = 0; i < to_delete.length; i++)
-                to_delete[i].remove();
-            for (let i = 0; i < to_hide.length; i++)
-                to_hide[i].style.display = 'none';
 
-            saveConfigs();
-        }, getDelay());
+            ['txt', 'img'].forEach((mode) => {
+                const parsed = TabsExtensionParser.parse(mode);
+                const extensions = this.#sort_extensions(parsed, configs[mode]);
 
-    }, getDelay());
+                processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]);
+            });
 
-});
+            setTimeout(() => {
+                this.#config.saveConfigs(processed_configs);
+            }, this.#config.delay);
+
+        }, this.#config.delay);
+    }
+}
+
+onUiLoaded(async () => { TabsExtension.init(); })
