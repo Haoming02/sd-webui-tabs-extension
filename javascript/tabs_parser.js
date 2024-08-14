@@ -66,7 +66,7 @@ class TabsExtensionParser {
         if ((extensionName == null) || (content == null))
             return [null, null];
 
-        styler.style.display = "none";
+        node.style.display = "none";
 
         if (isInput) {
             const checkbox = accordion.querySelector(".input-accordion-checkbox");
