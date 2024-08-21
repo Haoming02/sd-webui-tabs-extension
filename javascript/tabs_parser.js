@@ -74,6 +74,9 @@ class TabsExtensionParser {
             // Create a dummy Checkbox linked to the original Checkbox
             const dummy = this.#cloneCheckbox();
 
+            if (checkbox.checked)
+                dummy.checkbox.click();
+
             dummy.checkbox.onchange = () => {
                 if (checkbox.checked !== dummy.checkbox.checked)
                     checkbox.click();
