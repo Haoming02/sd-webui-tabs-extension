@@ -56,17 +56,20 @@ class TabsExtensionParser {
 
         const isInput = accordion.classList.contains("input-accordion");
 
-        const displayName = accordion.querySelector(".label-wrap>span").textContent;
-        const extensionName = this.#sanitizeExtensionName(displayName);
-
-        const content = [...accordion.children].filter((div) => (
-            (!div.classList.contains("hide")) && (!div.classList.contains("label-wrap")) && (div.children.length > 0)
-        ))[0];
-
-        if ((extensionName == null) || (content == null))
+        const displayName = accordion.querySelector(".label-wrap>span")?.textContent;
+        if (displayName == null)
             return [null, null];
 
-        node.style.display = "none";
+        const extensionName = this.#sanitizeExtensionName(displayName);
+
+        const contents = [...accordion.children].filter((div) => (
+            (!div.classList.contains("hide")) && (!div.classList.contains("label-wrap")) && (div.children.length > 0)
+        ));
+
+        if ((extensionName == null) || (contents.length === 0))
+            return [null, null];
+
+        const content = contents[0];
 
         if (isInput) {
             const checkbox = accordion.querySelector(".input-accordion-checkbox");
@@ -90,6 +93,7 @@ class TabsExtensionParser {
             content.insertBefore(dummy, content.firstElementChild);
         }
 
+        node.style.display = "none";
         return [extensionName, content];
     }
 
@@ -125,16 +129,28 @@ class TabsExtensionParser {
         const container = document.getElementById(`${mode}2img_script_container`);
         const children = Array.from(container.querySelector(".styler").children);
 
+        var count = 1;
+
         children.forEach((node) => {
             if (validExtensions.hasOwnProperty("Scripts")) {
                 validExtensions["Scripts"].appendChild(node);
                 return;
             }
 
-            const [name, content] = this.#parseObject(node);
+            try {
+                const [name, content] = this.#parseObject(node);
 
-            if (name != null)
-                validExtensions[name] = content;
+                if (name != null) {
+                    validExtensions[name] = content;
+                    count++;
+                }
+            } catch (e) {
+                const id = node.querySelector(".gradio-accordion")?.id;
+                if (id != null && id.indexOf("component-") === -1)
+                    alert(`Something went wrong while parsing the ${count}-th Accordion (suspect: ${id})`);
+                else
+                    alert(`Something went wrong while parsing the ${count}-th Accordion\n${e}`);
+            }
         });
 
         const [extra, options] = this.#extra_options(mode);

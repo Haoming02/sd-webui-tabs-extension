@@ -248,7 +248,8 @@ class TabsExtension {
                     return;
                 }
 
-                try { processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]); } catch (e) {
+                try { processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]); }
+                catch (e) {
                     alert(`[TabsExtension] Something went wrong during ${mode} setup:\n${e}`);
                     return;
                 }
@@ -266,4 +267,4 @@ class TabsExtension {
     }
 }
 
-onUiLoaded(async () => { TabsExtension.init(); })
+onUiLoaded(() => { TabsExtension.init(); })
