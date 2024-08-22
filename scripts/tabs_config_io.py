@@ -58,7 +58,7 @@ class TabsEx(scripts.Script):
         )
         label.do_not_save_to_config = True
 
-        btn = gr.Button(value="save", elem_id="TABSEX_BTN")
+        btn = gr.Button(value="save", visible=False, elem_id="TABSEX_BTN")
         btn.do_not_save_to_config = True
 
         btn.click(write_data, label).success(None, **js())
