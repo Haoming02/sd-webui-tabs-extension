@@ -224,21 +224,42 @@ class TabsExtension {
     }
 
     static init() {
-        this.#config = new TabsExtensionConfigs();
-        const configs = this.#config.parseConfigs();
-        const processed_configs = {};
+        var configs = undefined;
 
+        try {
+            this.#config = new TabsExtensionConfigs();
+            configs = this.#config.parseConfigs();
+        } catch (e) {
+            alert(`[TabsExtension] Something went wrong while parsing configs:\n${e}`);
+            return;
+        }
+
+        const processed_configs = {};
         setTimeout(() => {
 
             ['txt', 'img'].forEach((mode) => {
-                const parsed = TabsExtensionParser.parse(mode);
-                const extensions = this.#sort_extensions(parsed, configs[mode]);
+                var extensions = undefined;
 
-                processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]);
+                try {
+                    const parsed = TabsExtensionParser.parse(mode);
+                    extensions = this.#sort_extensions(parsed, configs[mode]);
+                } catch (e) {
+                    alert(`[TabsExtension] Something went wrong while parsing ${mode} extensions:\n${e}`);
+                    return;
+                }
+
+                try { processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]); } catch (e) {
+                    alert(`[TabsExtension] Something went wrong during ${mode} setup:\n${e}`);
+                    return;
+                }
             });
 
             setTimeout(() => {
-                this.#config.saveConfigs(processed_configs);
+                try { this.#config.saveConfigs(processed_configs); }
+                catch (e) {
+                    alert(`[TabsExtension] Something went wrong while saving configs:\n${e}`);
+                    return;
+                }
             }, this.#config.delay);
 
         }, this.#config.delay);

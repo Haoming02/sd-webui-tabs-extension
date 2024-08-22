@@ -50,7 +50,12 @@ class TabsEx(scripts.Script):
         if is_img2img:
             return None
 
-        label = gr.Textbox(value=load_data(), elem_id="TABSEX_LBL")
+        label = gr.Textbox(
+            label="[TabsExtension] Configs",
+            info="If this textbox does not disappear after a while, it means the Extension failed to process correctly... Please open an Issue on GitHub with the list of Extensions installed.",
+            value=load_data(),
+            elem_id="TABSEX_LBL",
+        )
         label.do_not_save_to_config = True
 
         btn = gr.Button(value="save", elem_id="TABSEX_BTN")
