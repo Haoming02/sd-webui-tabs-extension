@@ -18,7 +18,7 @@ def add_ui_settings():
             10,
             "Delay (ms) before moving the Extensions",
             gr.Slider,
-            {"minimum": 10, "maximum": 100, "step": 10},
+            {"minimum": 10, "maximum": 500, "step": 10},
             section=section,
         ).needs_reload_ui(),
     )

@@ -1,18 +1,12 @@
 class TabsExtensionParser {
 
-    static #setting = undefined;
-
-    /** @returns {Element} */
-    static #cloneCheckbox() {
-        this.#setting ??= document.getElementById('tab_settings');
-        const label = this.#setting.querySelector('input[type=checkbox]').parentElement.cloneNode(true);
+    /** @param {boolean} enabled @returns {Element} */
+    static #cloneCheckbox(enabled) {
+        const label = document.getElementById("TABSEX_CHECKBOX").querySelector('label').cloneNode(true);
         label.style.margin = "1em 0em";
 
         label.checkbox = label.querySelector("input");
-        label.checkbox.checked = false;
-
-        label.span = label.querySelector("span");
-        label.span.textContent = "Enable";
+        label.checkbox.checked = enabled;
 
         return label;
     }
@@ -75,10 +69,7 @@ class TabsExtensionParser {
             const checkbox = accordion.querySelector(".input-accordion-checkbox");
 
             // Create a dummy Checkbox linked to the original Checkbox
-            const dummy = this.#cloneCheckbox();
-
-            if (checkbox.checked)
-                dummy.checkbox.click();
+            const dummy = this.#cloneCheckbox(checkbox.checked);
 
             dummy.checkbox.onchange = () => {
                 if (checkbox.checked !== dummy.checkbox.checked)

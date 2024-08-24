@@ -93,6 +93,4 @@ class TabsExtensionConfigs {
 
         btn.click();
     }
-
-    static onSave() { document.getElementById('TABSEX_LBL').parentElement.parentElement.parentElement.remove(); }
 }

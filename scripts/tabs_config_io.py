@@ -31,14 +31,14 @@ def load_data() -> str:
         return DEFAULT_VALUE
 
 
-def js() -> dict:
-    if int(str(gr.__version__).split(".")[0]) == 4:
-        return {"js": "() => { TabsExtensionConfigs.onSave(); }"}
-    else:
-        return {"_js": "() => { TabsExtensionConfigs.onSave(); }"}
+def hide() -> list:
+    return [gr.update(visible=False), gr.update(visible=False)]
 
 
 class TabsEx(scripts.Script):
+
+    def __init__(self):
+        self.sorting_priority = 99999
 
     def title(self):
         return "Tabs Extension"
@@ -50,16 +50,20 @@ class TabsEx(scripts.Script):
         if is_img2img:
             return None
 
+        dummy = gr.Checkbox(
+            label="Enable", interactive=True, visible=True, elem_id="TABSEX_CHECKBOX"
+        )
+
         label = gr.Textbox(
             label="[TabsExtension] Configs",
-            info="If this textbox does not disappear after a while, it means the Extension failed to process correctly... Please open an Issue on GitHub with the list of Extensions installed.",
+            info="If this textbox does not disappear after a while (based on Delay setting), it means the Extension failed to process correctly... Please open an Issue on GitHub with the list of Extensions installed, along with any errors in the console.",
             value=load_data(),
             elem_id="TABSEX_LBL",
+            visible=True,
         )
-        label.do_not_save_to_config = True
 
         btn = gr.Button(value="save", visible=False, elem_id="TABSEX_BTN")
-        btn.do_not_save_to_config = True
+        btn.click(write_data, inputs=[label]).success(fn=hide, outputs=[dummy, label])
 
-        btn.click(write_data, label).success(None, **js())
+        [setattr(comp, "do_not_save_to_config", True) for comp in (dummy, label, btn)]
         return None

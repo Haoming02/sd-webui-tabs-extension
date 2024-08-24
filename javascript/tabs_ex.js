@@ -267,4 +267,6 @@ class TabsExtension {
     }
 }
 
-onUiLoaded(() => { TabsExtension.init(); })
+onUiLoaded(() => {
+    setTimeout(() => { TabsExtension.init(); }, 100);
+});
