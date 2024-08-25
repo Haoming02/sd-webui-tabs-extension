@@ -51,6 +51,15 @@ def add_ui_settings():
         ).needs_reload_ui(),
     )
 
+    opts.add_option(
+        "tabs_ex_container",
+        OptionInfo(False, "Hide the Extension container", section=section)
+        .info(
+            "In certain configurations, the original Extension container will show up as an empty space in the Webui. You can enable this to hide the container."
+        )
+        .needs_reload_ui(),
+    )
+
 
 def load_ui_settings():
     color = getattr(opts, "tabs_ex_act_color", "greenyellow")

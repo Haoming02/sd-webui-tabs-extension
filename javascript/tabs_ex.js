@@ -248,6 +248,9 @@ class TabsExtension {
                     return;
                 }
 
+                if (this.#config.container)
+                    document.getElementById(`${mode}2img_script_container`).querySelector(".styler").style.display = "none";
+
                 try { processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]); }
                 catch (e) {
                     alert(`[TabsExtension] Something went wrong during ${mode} setup:\n${e}`);

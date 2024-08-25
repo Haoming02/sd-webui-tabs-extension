@@ -16,11 +16,16 @@ class TabsExtensionConfigs {
     /** @return {boolean} */
     get open() { return this.#open; }
 
+    #container;
+    /** @return {boolean} */
+    get container() { return this.#container; }
+
     constructor() {
         this.#delay = document.getElementById('setting_tabs_ex_delay').querySelector('input[type=range]').value;
         this.#forge = document.getElementById('setting_tabs_ex_forge').querySelector('input[type=checkbox]').checked;
         this.#sort = document.getElementById('setting_tabs_ex_sort').querySelector('input[type=checkbox]').checked;
         this.#open = document.getElementById('setting_tabs_ex_open').querySelector('input[type=checkbox]').checked;
+        this.#container = document.getElementById('setting_tabs_ex_container').querySelector('input[type=checkbox]').checked;
     }
 
     /** @param {string} name @param {string} mode @return {string} */
