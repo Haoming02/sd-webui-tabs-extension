@@ -85,6 +85,11 @@ class TabsExtensionParser {
         }
 
         node.style.display = "none";
+        if ((accordion.id != null) && (!accordion.id.startsWith("component-"))) {
+            content.id = accordion.id;
+            accordion.id = `.${accordion.id}`;
+        }
+
         return [extensionName, content];
     }
 
