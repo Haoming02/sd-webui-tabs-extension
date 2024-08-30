@@ -62,16 +62,21 @@ def add_ui_settings():
 
 
 def load_ui_settings():
-    color = getattr(opts, "tabs_ex_act_color", "greenyellow")
+    color = getattr(opts, "tabs_ex_act_color", "greenyellow").strip().lower()
     ln = 1
 
     with open(CSS, "r") as FILE:
         styles = FILE.readlines()
 
     assert "--tabs-highlight-color:" in styles[ln]
-    part, _ = styles[ln].split(":")
 
-    styles[ln] = f"{part}: {color.strip().lower()};\n"
+    key, part = styles[ln].split(":")
+    current_color = part.split(";")[0].strip().lower()
+
+    if current_color == color:
+        return
+
+    styles[ln] = f"{key}: {color};\n"
 
     with open(CSS, "w") as FILE:
         FILE.writelines(styles)
