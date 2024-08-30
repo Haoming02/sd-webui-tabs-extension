@@ -7,7 +7,7 @@ import os
 
 
 CSS = os.path.join(scripts.basedir(), "style.css")
-section = ("ui", "User interface")
+section = ("ui_tabs_ex", "Tabs Extension")
 
 
 def add_ui_settings():
@@ -20,24 +20,34 @@ def add_ui_settings():
             gr.Slider,
             {"minimum": 10, "maximum": 500, "step": 10},
             section=section,
+            category_id="ui",
         ).needs_reload_ui(),
     )
 
     opts.add_option(
         "tabs_ex_act_color",
-        OptionInfo("greenyellow", "Color for active Extensions", section=section)
+        OptionInfo(
+            "greenyellow",
+            "Color for active Extensions",
+            section=section,
+            category_id="ui",
+        )
         .link("CSS", "https://www.w3schools.com/cssref/css_colors.php")
         .needs_reload_ui(),
     )
 
     opts.add_option(
         "tabs_ex_version",
-        OptionInfo(False, "Hide the version number", section=section).needs_reload_ui(),
+        OptionInfo(
+            False, "Hide the version number", section=section, category_id="ui"
+        ).needs_reload_ui(),
     )
 
     opts.add_option(
         "tabs_ex_forge",
-        OptionInfo(False, 'Hide the "Integrated" text', section=section)
+        OptionInfo(
+            False, 'Hide the "Integrated" text', section=section, category_id="ui"
+        )
         .info("for SD Webui Forge")
         .needs_reload_ui(),
     )
@@ -45,7 +55,7 @@ def add_ui_settings():
     opts.add_option(
         "tabs_ex_sort",
         OptionInfo(
-            False, "Sort Extensions based on Configs", section=section
+            False, "Sort Extensions based on Configs", section=section, category_id="ui"
         ).needs_reload_ui(),
     )
 
@@ -55,6 +65,7 @@ def add_ui_settings():
             False,
             "Allow hiding the extension content when clicking on the same tab again",
             section=section,
+            category_id="ui",
         ).needs_reload_ui(),
     )
 
@@ -64,12 +75,15 @@ def add_ui_settings():
             True,
             "Automatically show the first extension tab on startup",
             section=section,
+            category_id="ui",
         ).needs_reload_ui(),
     )
 
     opts.add_option(
         "tabs_ex_container",
-        OptionInfo(False, "Hide the Extension container", section=section)
+        OptionInfo(
+            False, "Hide the Extension container", section=section, category_id="ui"
+        )
         .info(
             "In certain configurations, the original Extension container will show up as an empty space in the Webui. You can enable this to hide the container."
         )

@@ -48,7 +48,7 @@ After launching the Webui *(including the browser, not just the console)* with t
     |Scripts|below|below|
 
 ### Settings
-> The settings are in the **User interface** section
+> The settings are in the **Tabs Extension** section under the <ins>User Interface</ins> category
 - **Delay:** This Extension moves the contents after a tiny delay to prevent breaking some references. If you have a slow machine, you *may* need to increase the delay.
 - **Color:** The color used to indicate active extensions. *(**Default:** `GreenYellow`)*
 - **Version:** Hide the version number for the Extensions. *(**not** recommended)*
