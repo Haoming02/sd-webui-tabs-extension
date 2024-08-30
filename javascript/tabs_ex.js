@@ -51,7 +51,7 @@ class TabsExtension {
                     button.classList.remove('active');
             }
 
-        }, 10 * this.#config.delay);
+        }, 25 * this.#config.delay);
     }
 
     /**
@@ -134,8 +134,12 @@ class TabsExtension {
 
             const btnSpan = document.createElement('span');
             btnSpan.className = 'tab_label';
-            btnSpan.textContent = (!this.#config.forge) ? tabKey :
-                tabKey.split('Integrated')[0].trim();
+
+            const extensionName = (!this.#config.version) ?
+                extensions[tabKey].getAttribute("ext-label") : tabKey;
+
+            btnSpan.textContent = (!this.#config.forge) ? extensionName :
+                extensionName.split('Integrated')[0].trim();
 
             const tabButton = document.createElement("button");
             tabButton.classList.add('tab_button');
@@ -153,7 +157,9 @@ class TabsExtension {
                     extensions[this.#active_tab[mode]].style.display = "none";
                 }
 
-                this.#active_tab[mode] = (this.#active_tab[mode] === tabKey) ? undefined : tabKey;
+                this.#active_tab[mode] = (
+                    (this.#config.toggle) && (this.#active_tab[mode] === tabKey)
+                ) ? undefined : tabKey;
 
                 if (this.#active_tab[mode] != undefined) {
                     allButtons[this.#active_tab[mode]].classList.add('selected');

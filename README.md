@@ -4,7 +4,7 @@ This is an Extension for the [Automatic1111 Webui](https://github.com/AUTOMATIC1
 > Also supports both old & new [Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge)!
 
 ## Features
-This was achieved by moving the *contents* of each Extension from the "Accordion" *(the dropdown thingy)* into their own separate Tabs, so that you only need to switch between each tab to change the settings, instead of scrolling all the way down and then all the way up every single time. Clicking on the button of an opened tab will hide it instead. Additionally, the `Scripts` section is also moved into a tab.
+This was achieved by moving the *contents* of each Extension from the "Accordion" *(the dropdown thingy)* into their own separate Tabs, so that you only need to switch between each tab to change the settings, instead of scrolling all the way down and then all the way up every single time. Additionally, the `Scripts` section is also moved into a tab.
 
 This is especially helpful if you have many Extensions installed and active.
 
@@ -51,7 +51,9 @@ After launching the Webui *(including the browser, not just the console)* with t
 > The settings are in the **User interface** section
 - **Delay:** This Extension moves the contents after a tiny delay to prevent breaking some references. If you have a slow machine, you *may* need to increase the delay.
 - **Color:** The color used to indicate active extensions. *(**Default:** `GreenYellow`)*
+- **Version:** Hide the version number for the Extensions. *(**not** recommended)*
 - **Forge:** Hide the "Integrated" text for the built-in Extensions.
 - **Sort:** By default, extensions are sorted based on their appearance order *(**ie.** The folder names)*. Enable this to sort them based on the order in the `tab_configs.csv`.
+- **Toggle:** Allow you to click on the button of an opened tab to hide it instead.
 - **Open:** By default, first extension is shown. You can hide all the extensions on start up instead.
 - **Hide Container:** By default, this Extension only moves the contents and hide the Accordions, leaving the extension container untouched. When using certain themes that add margins and paddings, the container may show up as an empty block instead. If you do not have any leftover extensions in the container *(**ie.** Those without Accordion in its UI)*, you can hide the entire container instead.

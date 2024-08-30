@@ -4,6 +4,10 @@ class TabsExtensionConfigs {
     /** @return {number} */
     get delay() { return this.#delay; };
 
+    #version;
+    /** @return {boolean} */
+    get version() { return this.#version; }
+
     #forge;
     /** @return {boolean} */
     get forge() { return this.#forge; }
@@ -11,6 +15,10 @@ class TabsExtensionConfigs {
     #sort;
     /** @return {boolean} */
     get sort() { return this.#sort; }
+
+    #toggle;
+    /** @return {boolean} */
+    get toggle() { return this.#toggle; }
 
     #open;
     /** @return {boolean} */
@@ -22,8 +30,10 @@ class TabsExtensionConfigs {
 
     constructor() {
         this.#delay = document.getElementById('setting_tabs_ex_delay').querySelector('input[type=range]').value;
+        this.#version = document.getElementById('setting_tabs_ex_version').querySelector('input[type=checkbox]').checked;
         this.#forge = document.getElementById('setting_tabs_ex_forge').querySelector('input[type=checkbox]').checked;
         this.#sort = document.getElementById('setting_tabs_ex_sort').querySelector('input[type=checkbox]').checked;
+        this.#toggle = document.getElementById('setting_tabs_ex_toggle').querySelector('input[type=checkbox]').checked;
         this.#open = document.getElementById('setting_tabs_ex_open').querySelector('input[type=checkbox]').checked;
         this.#container = document.getElementById('setting_tabs_ex_container').querySelector('input[type=checkbox]').checked;
     }

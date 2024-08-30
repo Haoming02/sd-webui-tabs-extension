@@ -37,6 +37,7 @@ class TabsExtensionParser {
             scripts.style.margin = '10px 0px';
             script_block.appendChild(scripts);
 
+            script_block.setAttribute("ext-label", "Scripts");
             return ["Scripts", script_block];
         }
 
@@ -90,6 +91,7 @@ class TabsExtensionParser {
             accordion.id = `.${accordion.id}`;
         }
 
+        content.setAttribute("ext-label", displayName);
         return [extensionName, content];
     }
 
@@ -105,13 +107,12 @@ class TabsExtensionParser {
         const styler = extra_options.parentElement;
         styler.style.display = "none";
 
-        const name = "Extra Options";
-
         const content = [...extra_options.children].filter((div) => (
             (!div.classList.contains("hide")) && (!div.classList.contains("label-wrap")) && (div.children.length > 0)
         ))[0];
 
-        return [name, content];
+        content.setAttribute("ext-label", "Extra Options");
+        return ["Extra Options", content];
     }
 
     /**
@@ -143,7 +144,7 @@ class TabsExtensionParser {
             } catch (e) {
                 const id = node.querySelector(".gradio-accordion")?.id;
                 if (id != null && id.indexOf("component-") === -1)
-                    alert(`Something went wrong while parsing the ${count}-th Accordion (suspect: ${id})`);
+                    alert(`Something went wrong while parsing the ${count}-th Accordion (suspect: ${id})\n${e}`);
                 else
                     alert(`Something went wrong while parsing the ${count}-th Accordion\n${e}`);
             }

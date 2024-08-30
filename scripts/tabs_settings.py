@@ -31,9 +31,14 @@ def add_ui_settings():
     )
 
     opts.add_option(
+        "tabs_ex_version",
+        OptionInfo(False, "Hide the version number", section=section).needs_reload_ui(),
+    )
+
+    opts.add_option(
         "tabs_ex_forge",
         OptionInfo(False, 'Hide the "Integrated" text', section=section)
-        .info("for SD-Webui-Forge")
+        .info("for SD Webui Forge")
         .needs_reload_ui(),
     )
 
@@ -45,9 +50,20 @@ def add_ui_settings():
     )
 
     opts.add_option(
+        "tabs_ex_toggle",
+        OptionInfo(
+            False,
+            "Allow hiding the extension content when clicking on the same tab again",
+            section=section,
+        ).needs_reload_ui(),
+    )
+
+    opts.add_option(
         "tabs_ex_open",
         OptionInfo(
-            True, "Automatically show the first extension tab on start", section=section
+            True,
+            "Automatically show the first extension tab on startup",
+            section=section,
         ).needs_reload_ui(),
     )
 
