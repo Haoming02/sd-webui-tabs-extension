@@ -31,6 +31,8 @@ After launching the Webui *(including the browser, not just the console)* with t
     - The `right` side refers to under the generation Results
     - The `above` refers to above the `tabs` buttons
     - The `below` refers to below the `tabs` buttons
+    - The `hide` will not show the extension instead
+        - Mainly for extensions with some sort of always-active functionality
 
 > **Note:** Extensions set to `above` and `below` will always be shown without tab buttons
 

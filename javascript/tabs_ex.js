@@ -129,7 +129,8 @@ class TabsExtension {
                     contentContainers[pos].appendChild(extensions[tabKey]);
                     extensions[tabKey].style.display = "block";
                     return;
-                }
+                } else if (pos === "hide")
+                    return;
             }
 
             const btnSpan = document.createElement('span');

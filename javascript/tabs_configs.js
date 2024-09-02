@@ -42,7 +42,7 @@ class TabsExtensionConfigs {
     #validateMode(name, mode) {
         const availableModes = ["left", "right"];
         if (name !== "tabs")
-            availableModes.push("above", "below");
+            availableModes.push("above", "below", "hide");
 
         if (!availableModes.includes(mode))
             return availableModes[0];
