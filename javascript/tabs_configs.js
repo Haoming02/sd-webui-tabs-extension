@@ -94,7 +94,6 @@ class TabsExtensionConfigs {
      */
     saveConfigs(config) {
         const label = document.getElementById('TABSEX_LBL').querySelector('textarea');
-        const btn = document.getElementById('TABSEX_BTN');
         const data = [",txt,img"];
 
         const keys = Array.from(Object.keys(config["txt"]));
@@ -106,6 +105,9 @@ class TabsExtensionConfigs {
         label.value = data.join("\n");
         updateInput(label);
 
+        const btn = document.getElementById('TABSEX_BTN');
         btn.click();
+
+        console.log("[TabsExtension] Saving Configs via ", btn);
     }
 }

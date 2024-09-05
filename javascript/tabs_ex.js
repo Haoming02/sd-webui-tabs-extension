@@ -265,13 +265,11 @@ class TabsExtension {
                 }
             });
 
-            setTimeout(() => {
-                try { this.#config.saveConfigs(processed_configs); }
-                catch (e) {
-                    alert(`[TabsExtension] Something went wrong while saving configs:\n${e}`);
-                    return;
-                }
-            }, this.#config.delay);
+            try { this.#config.saveConfigs(processed_configs); }
+            catch (e) {
+                alert(`[TabsExtension] Something went wrong while saving configs:\n${e}`);
+                return;
+            }
 
         }, this.#config.delay);
     }
