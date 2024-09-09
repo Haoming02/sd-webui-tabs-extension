@@ -51,7 +51,7 @@ class TabsExtension {
                     button.classList.remove('active');
             }
 
-        }, 1000);
+        }, 50 * this.#config.delay);
     }
 
     /**
