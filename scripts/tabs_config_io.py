@@ -35,15 +35,21 @@ class TabsEx(scripts.Script):
 
         label = gr.Textbox(
             label="[TabsExtension] Configs",
-            info="If this textbox does not disappear after a while (based on Delay setting), it means the Extension failed to process correctly... Please open an Issue on GitHub with the list of Extensions installed, along with any errors in the console.",
+            info="""
+            If this textbox does not disappear after a while (based on Delay setting), it might mean the Extension failed to process correctly...
+            Please first press [F12] to open the browser console, and see if there is a "Saving Configs via" line. Then, open an Issue on GitHub with the list of Extensions installed, along with any errors in the console.
+            """,
             value=self.data,
             elem_id="TABSEX_LBL",
             visible=True,
         )
 
         btn = gr.Button(value="save", visible=False, elem_id="TABSEX_BTN")
-        btn.click(fn=self.write_data, inputs=[label], outputs=None).success(
-            fn=self.hide, inputs=None, outputs=[dummy, label]
+        btn.click(
+            fn=self.write_data,
+            inputs=[label],
+            outputs=[dummy, label],
+            show_progress="hidden",
         )
 
         [setattr(comp, "do_not_save_to_config", True) for comp in (dummy, label, btn)]
@@ -61,12 +67,9 @@ class TabsEx(scripts.Script):
                 csv_file.write(DEFAULT_VALUE)
             return DEFAULT_VALUE
 
-    def write_data(self, data: str):
-        if data.strip() == self.data.strip():
-            return
+    def write_data(self, data: str) -> list:
+        if data.strip() != self.data.strip():
+            with open(CONFIG_FILE, "w", encoding="utf-8") as csv_file:
+                csv_file.write(data)
 
-        with open(CONFIG_FILE, "w", encoding="utf-8") as csv_file:
-            csv_file.write(data)
-
-    def hide(self) -> list:
         return [gr.update(visible=False), gr.update(visible=False)]

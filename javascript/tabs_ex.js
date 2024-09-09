@@ -51,7 +51,7 @@ class TabsExtension {
                     button.classList.remove('active');
             }
 
-        }, 25 * this.#config.delay);
+        }, 1000);
     }
 
     /**
@@ -170,8 +170,21 @@ class TabsExtension {
 
             contentContainers[configs[tabKey]].appendChild(extensions[tabKey]);
 
-            if (tabKey === 'Scripts')
+            if (tabKey === 'Scripts') {
+                const scriptsDropdown = extensions[tabKey].querySelector('input');
+
+                const observer = new MutationObserver((mutations) => {
+                    if (mutations) {
+                        if (scriptsDropdown.value != 'None')
+                            allButtons[tabKey].classList.add('active');
+                        else
+                            allButtons[tabKey].classList.remove('active');
+                    }
+                });
+
+                observer.observe(extensions[tabKey], { childList: true, subtree: true });
                 return;
+            }
 
             const enableToggle = this.#tryFindEnableToggle(extensions[tabKey]);
             if (enableToggle == null)
@@ -209,23 +222,19 @@ class TabsExtension {
         if (this.#config.open)
             Object.values(allButtons)[0].click();
 
-        // Check for active Script
-        const scriptsDropdown = extensions['Scripts'].querySelector('input');
-
         const options = { root: document.documentElement };
         const observer = new IntersectionObserver((entries, observer) => {
-            if (entries[0].intersectionRatio > 0) {
+            if (entries[0].intersectionRatio > 0)
                 this.#verifyTabsEnable(mode);
-
-                if (scriptsDropdown.value === 'None')
-                    allButtons['Scripts']?.classList.remove('active');
-                else
-                    allButtons['Scripts']?.classList.add('active');
-            }
         }, options);
 
         // When switching tabs, refresh the active status
         observer.observe(tabsContainer);
+
+        // Hardcode Paste Event...
+        const paste = document.getElementById(`${mode}2img_tools`).querySelector("#paste");
+        if (paste)
+            paste.onclick = () => { this.#verifyTabsEnable(mode); }
 
         return configs;
     }
@@ -233,13 +242,8 @@ class TabsExtension {
     static init() {
         var configs = undefined;
 
-        try {
-            this.#config = new TabsExtensionConfigs();
-            configs = this.#config.parseConfigs();
-        } catch (e) {
-            alert(`[TabsExtension] Something went wrong while parsing configs:\n${e}`);
-            return;
-        }
+        this.#config = new TabsExtensionConfigs();
+        configs = this.#config.parseConfigs();
 
         const processed_configs = {};
         setTimeout(() => {
@@ -251,7 +255,7 @@ class TabsExtension {
                     const parsed = TabsExtensionParser.parse(mode);
                     extensions = this.#sort_extensions(parsed, configs[mode]);
                 } catch (e) {
-                    alert(`[TabsExtension] Something went wrong while parsing ${mode} extensions:\n${e}`);
+                    alert(`[TabsExtension] Something went wrong while parsing ${mode}2img extensions:\n${e}`);
                     return;
                 }
 
@@ -260,7 +264,7 @@ class TabsExtension {
 
                 try { processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]); }
                 catch (e) {
-                    alert(`[TabsExtension] Something went wrong during ${mode} setup:\n${e}`);
+                    alert(`[TabsExtension] Something went wrong during ${mode}2img setup:\n${e}`);
                     return;
                 }
             });

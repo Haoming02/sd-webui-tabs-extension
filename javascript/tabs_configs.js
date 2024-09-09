@@ -106,8 +106,8 @@ class TabsExtensionConfigs {
         updateInput(label);
 
         const btn = document.getElementById('TABSEX_BTN');
-        btn.click();
-
         console.log("[TabsExtension] Saving Configs via ", btn);
+
+        btn.click();
     }
 }

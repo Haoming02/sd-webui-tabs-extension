@@ -89,6 +89,13 @@ class TabsExtensionParser {
         if ((accordion.id != null) && (!accordion.id.startsWith("component-"))) {
             content.id = accordion.id;
             accordion.id = `.${accordion.id}`;
+
+            if (isInput) {
+                // Prevent Errors in Console...
+                content.visibleCheckbox = {};
+                content.visibleCheckbox.checked = undefined;
+                content.onVisibleCheckboxChange = () => { };
+            }
         }
 
         content.setAttribute("ext-label", displayName);
@@ -126,28 +133,16 @@ class TabsExtensionParser {
         const container = document.getElementById(`${mode}2img_script_container`);
         const children = Array.from(container.querySelector(".styler").children);
 
-        var count = 1;
-
         children.forEach((node) => {
             if (validExtensions.hasOwnProperty("Scripts")) {
                 validExtensions["Scripts"].appendChild(node);
                 return;
             }
 
-            try {
-                const [name, content] = this.#parseObject(node);
+            const [name, content] = this.#parseObject(node);
 
-                if (name != null) {
-                    validExtensions[name] = content;
-                    count++;
-                }
-            } catch (e) {
-                const id = node.querySelector(".gradio-accordion")?.id;
-                if (id != null && id.indexOf("component-") === -1)
-                    alert(`Something went wrong while parsing the ${count}-th Accordion (suspect: ${id})\n${e}`);
-                else
-                    alert(`Something went wrong while parsing the ${count}-th Accordion\n${e}`);
-            }
+            if (name != null)
+                validExtensions[name] = content;
         });
 
         const [extra, options] = this.#extra_options(mode);
