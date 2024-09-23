@@ -17,7 +17,7 @@ class TabsEx(scripts.Script):
 
     def __init__(self):
         self.sorting_priority = 99999
-        self.data: str = self.load_data()
+        self.data: str = self._load_data()
 
     def title(self):
         return "Tabs Extension"
@@ -46,18 +46,19 @@ class TabsEx(scripts.Script):
 
         btn = gr.Button(value="save", visible=False, elem_id="TABSEX_BTN")
         btn.click(
-            fn=self.write_data,
+            fn=self._write_data,
             inputs=[label],
             outputs=[dummy, label],
             show_progress="hidden",
+            queue=False,
         )
 
         [setattr(comp, "do_not_save_to_config", True) for comp in (dummy, label, btn)]
         return None
 
-    def load_data(self) -> str:
+    def _load_data(self) -> str:
         if os.path.isfile(CONFIG_FILE):
-            with open(CONFIG_FILE, "r", encoding="utf-8", errors="replace") as csv_file:
+            with open(CONFIG_FILE, "r", encoding="utf-8", errors="ignore") as csv_file:
                 data = csv_file.read()
             return data
 
@@ -67,7 +68,7 @@ class TabsEx(scripts.Script):
                 csv_file.write(DEFAULT_VALUE)
             return DEFAULT_VALUE
 
-    def write_data(self, data: str) -> list:
+    def _write_data(self, data: str) -> list:
         if data.strip() != self.data.strip():
             with open(CONFIG_FILE, "w", encoding="utf-8") as csv_file:
                 csv_file.write(data)
