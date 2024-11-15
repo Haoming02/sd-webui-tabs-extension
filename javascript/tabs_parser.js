@@ -1,6 +1,6 @@
 class TabsExtensionParser {
 
-    /** @param {boolean} enabled @returns {Element} */
+    /** @param {boolean} enabled @returns {HTMLInputElement} */
     static #cloneCheckbox(enabled) {
         const label = document.getElementById("TABSEX_CHECKBOX").querySelector('label').cloneNode(true);
         label.style.margin = "1em 0em";
@@ -25,8 +25,8 @@ class TabsExtensionParser {
     }
 
     /**
-     * @param {Element} node
-     * @returns {[string, Element]}
+     * @param {HTMLDivElement} node
+     * @returns {[string, HTMLDivElement]}
      */
     static #parseObject(node) {
         if (node.classList.contains("form")) {
@@ -104,7 +104,7 @@ class TabsExtensionParser {
 
     /**
      * @param {string} mode 'txt' | 'img'
-     * @returns {[string, Element]}
+     * @returns {[string, HTMLDivElement]}
      */
     static #extra_options(mode) {
         const extra_options = document.getElementById(`extra_options_${mode}2img`);
@@ -124,7 +124,7 @@ class TabsExtensionParser {
 
     /**
      * @param {string} mode 'txt' | 'img'
-     * @returns {{string: Element}}
+     * @returns {{string: HTMLDivElement}}
      */
     static parse(mode) {
         const validExtensions = {};

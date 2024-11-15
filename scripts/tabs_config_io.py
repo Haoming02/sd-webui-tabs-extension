@@ -1,22 +1,15 @@
-import modules.scripts as scripts
+from modules import scripts
 import gradio as gr
 import os
 
 
 CONFIG_FILE = os.path.join(scripts.basedir(), "tab_configs.csv")
-DEFAULT_VALUE = "\n".join(
-    [
-        ",".join(["", "txt", "img"]),
-        ",".join(["tabs", "left", "right"]),
-        ",".join(["default", "left", "right"]),
-    ]
-)
 
 
 class TabsEx(scripts.Script):
+    sorting_priority = 99999
 
     def __init__(self):
-        self.sorting_priority = 99999
         self.data: str = self._load_data()
 
     def title(self):
@@ -49,17 +42,26 @@ class TabsEx(scripts.Script):
         [setattr(comp, "do_not_save_to_config", True) for comp in (dummy, label, btn)]
         return None
 
-    def _load_data(self) -> str:
+    @staticmethod
+    def _load_data() -> str:
         if not os.path.isfile(CONFIG_FILE):
-            return DEFAULT_VALUE
+            return "\n".join(
+                [
+                    ",".join(["", "txt", "img"]),
+                    ",".join(["tabs", "left", "right"]),
+                    ",".join(["default", "left", "right"]),
+                ]
+            )
+
         with open(CONFIG_FILE, "r", encoding="utf-8", errors="ignore") as csv_file:
             return csv_file.read()
 
     def _write_data(self, data: str):
         try:
             if data.strip() != self.data.strip():
-                print("\n[Tabs. Ex] Saving New Config...\n")
+                print("\n[TabsExtension] Saving New Config...\n")
                 with open(CONFIG_FILE, "w+", encoding="utf-8") as csv_file:
                     csv_file.write(data)
-        except:
+
+        except Exception:
             raise gr.Error("[TabsExtension] Failed to save config...")

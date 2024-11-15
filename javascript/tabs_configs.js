@@ -52,7 +52,7 @@ class TabsExtensionConfigs {
 
     /**
      * Convert CSV to Dict
-     * @return {object}
+     * @return {{string: {string: string}}}
      */
     parseConfigs() {
         const config = {
@@ -90,7 +90,7 @@ class TabsExtensionConfigs {
 
     /**
      * Convert Dict to CSV
-     * @param {object} config
+     * @param {{string: {string: string}}} config
      */
     saveConfigs(config) {
         const label = document.getElementById('TABSEX_LBL').querySelector('textarea');

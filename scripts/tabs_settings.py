@@ -7,10 +7,10 @@ import os
 
 
 CSS = os.path.join(scripts.basedir(), "style.css")
-section = ("ui_tabs_ex", "Tabs Extension")
 
 
 def add_ui_settings():
+    section = ("ui_tabs_ex", "Tabs Extension")
 
     opts.add_option(
         "tabs_ex_delay",
@@ -105,8 +105,8 @@ def load_ui_settings():
     color = getattr(opts, "tabs_ex_act_color", "greenyellow").strip().lower()
     ln = 1
 
-    with open(CSS, "r") as FILE:
-        styles = FILE.readlines()
+    with open(CSS, "r") as file:
+        styles = file.readlines()
 
     assert "--tabs-highlight-color:" in styles[ln]
 
@@ -118,8 +118,8 @@ def load_ui_settings():
 
     styles[ln] = f"{key}: {color};\n"
 
-    with open(CSS, "w") as FILE:
-        FILE.writelines(styles)
+    with open(CSS, "w") as file:
+        file.writelines(styles)
 
 
 on_ui_settings(add_ui_settings)
