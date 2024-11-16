@@ -15,6 +15,9 @@ class TabsExtension {
         "img": []
     };
 
+    /** @type {setTimeout} */
+    static #refreshQueue = undefined;
+
     /** @param {HTMLDivElement} extension @returns {HTMLInputElement} */
     static #tryFindEnableToggle(extension) {
         const allCheckbox = Array.from(extension.querySelectorAll('input[type=checkbox]'));
@@ -37,8 +40,9 @@ class TabsExtension {
         return temp;
     }
 
-    static refreshEnableCheckbox() {
-        setTimeout(() => {
+    static #refreshEnableCheckbox() {
+        if (this.#refreshQueue) clearTimeout(this.#refreshQueue);
+        this.#refreshQueue = setTimeout(() => {
             ['txt', 'img'].forEach((mode) => {
                 for (const [toggle, button] of this.#enablePairs[mode]) {
                     if (toggle.checked)
@@ -47,7 +51,7 @@ class TabsExtension {
                         button.classList.remove('active');
                 }
             });
-        }, this.#config.delay);
+        }, 250);
     }
 
     /**
@@ -245,6 +249,8 @@ class TabsExtension {
             }
 
         }, this.#config.delay);
+
+        document.addEventListener("click", () => this.#refreshEnableCheckbox());
     }
 }
 
