@@ -21,12 +21,12 @@ def observe(component: Component, **kwargs: dict):
     elem_id: str = kwargs.get("elem_id", None) or ""
     # InputAccordion
     if "-checkbox" in elem_id:
-        component.change(fn=None, **js())
+        component.input(fn=None, **js())
         return
 
     label: str = (kwargs.get("label", None) or "").lower()
     if "enable" in label or "active" in label:
-        component.change(fn=None, **js())
+        component.input(fn=None, **js())
 
 
 on_after_component(observe)
