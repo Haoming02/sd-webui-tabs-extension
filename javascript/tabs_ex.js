@@ -4,36 +4,23 @@ class TabsExtension {
     static #config;
 
     /** @type {{string: HTMLDivElement}} */
-    static #activeExtension = {
-        "txt": undefined,
-        "img": undefined
-    };
+    static #activeExtension = { "txt": null, "img": null };
 
-    /** @type {{string: [HTMLInputElement, HTMLButtonElement][]}} */
-    static #enablePairs = {
-        "txt": [],
-        "img": []
-    };
+    /** @type {[HTMLInputElement, HTMLButtonElement][]} */
+    static #enablePairs = [];
 
     /** @type {setTimeout} */
-    static #refreshQueue = undefined;
+    static #refreshQueue = null;
 
     /** @param {HTMLDivElement} extension @returns {HTMLInputElement} */
     static #tryFindEnableToggle(extension) {
-        const allCheckbox = Array.from(extension.querySelectorAll('input[type=checkbox]'));
-        if (allCheckbox.length === 0)
-            return null;
-
         let temp = null;
-        const labels = allCheckbox.map((checkbox) =>
-            checkbox.parentNode.querySelector('span')?.textContent.toLowerCase());
 
-        // Find the first "enable" label; otherwise use the first "active" label
-        for (let i = 0; i < labels.length; i++) {
-            if (labels[i]?.includes('enable'))
-                return allCheckbox[i];
-            if ((temp == null) && (labels[i]?.includes('active')))
-                temp = allCheckbox[i];
+        for (const checkbox of extension.querySelectorAll('input[type=checkbox]')) {
+            const labelText = checkbox.parentNode?.querySelector('span')?.textContent?.toLowerCase();
+            // Find the first "enable" label; otherwise use the first "active" label
+            if (labelText?.includes('enable')) return checkbox;
+            if (!temp && labelText?.includes('active')) temp = checkbox;
         }
 
         // null by default
@@ -43,14 +30,12 @@ class TabsExtension {
     static #refreshEnableCheckbox() {
         if (this.#refreshQueue) clearTimeout(this.#refreshQueue);
         this.#refreshQueue = setTimeout(() => {
-            ['txt', 'img'].forEach((mode) => {
-                for (const [toggle, button] of this.#enablePairs[mode]) {
-                    if (toggle.checked)
-                        button.classList.add('active');
-                    else
-                        button.classList.remove('active');
-                }
-            });
+            for (const [toggle, button] of this.#enablePairs) {
+                if (toggle.checked)
+                    button.classList.add('active');
+                else
+                    button.classList.remove('active');
+            }
         }, 250);
     }
 
@@ -66,16 +51,15 @@ class TabsExtension {
         const sorted = {};
 
         const keys = Array.from(Object.keys(configs));
-        keys.forEach((key) => {
+        for (const key of keys) {
             if (extensions.hasOwnProperty(key)) {
                 sorted[key] = extensions[key];
                 delete extensions[key];
             }
-        });
+        }
 
-        Object.keys(extensions).forEach((key) => {
+        for (const key of Object.keys(extensions))
             sorted[key] = extensions[key];
-        });
 
         return sorted;
     }
@@ -93,16 +77,16 @@ class TabsExtension {
             'right': document.getElementById(`${mode}2img_results`)
         };
 
-        const mainSide = configs['tabs'];
-        const oppSide = (mainSide === 'left') ? 'right' : 'left'
+        /** @type {string} */ const mainSide = configs['tabs'];
+        /** @type {string} */ const oppSide = (mainSide === 'left') ? 'right' : 'left'
 
         const extensionContainers = {};
 
-        ['above', 'left', 'below', 'right'].forEach((side) => {
+        for (const side of ['above', 'left', 'below', 'right']) {
             extensionContainers[side] = document.createElement("div");
             extensionContainers[side].id = `tabs_ex_content-${mode}2img-${side}`;
             extensionContainers[side].style.overflow = "visible";
-        });
+        }
 
         const buttonContainer = document.createElement("div");
         extensionContainers[mainSide].appendChild(buttonContainer);
@@ -115,7 +99,7 @@ class TabsExtension {
 
         const allButtons = {};
 
-        Object.keys(extensions).forEach((tabKey) => {
+        for (const tabKey of Object.keys(extensions)) {
             if (!configs.hasOwnProperty(tabKey)) {
                 // New Extension
                 configs[tabKey] = configs['default'];
@@ -123,17 +107,18 @@ class TabsExtension {
 
             const pos = configs[tabKey];
             if (pos === "hide")
-                return;
-            else if (pos === "above" || pos === "below") {
+                continue;
+
+            if (pos === "above" || pos === "below") {
                 extensionContainers[pos].appendChild(extensions[tabKey]);
                 extensions[tabKey].style.display = "block";
-                return;
+                continue;
             }
 
             const btnSpan = document.createElement('span');
             btnSpan.className = 'tab_label';
 
-            const extensionName = this.#config.version ? tabKey :
+            const extensionName = (this.#config.version) ? tabKey :
                 extensions[tabKey].getAttribute("ext-label");
 
             btnSpan.textContent = (!this.#config.forge) ? extensionName :
@@ -150,16 +135,16 @@ class TabsExtension {
                 if (e.ctrlKey)
                     return;
 
-                if (this.#activeExtension[mode] != undefined) {
+                if (this.#activeExtension[mode] != null) {
                     allButtons[this.#activeExtension[mode]].classList.remove('selected');
                     extensions[this.#activeExtension[mode]].style.display = "none";
                 }
 
                 this.#activeExtension[mode] = (
                     (this.#config.toggle) && (this.#activeExtension[mode] === tabKey)
-                ) ? undefined : tabKey;
+                ) ? null : tabKey;
 
-                if (this.#activeExtension[mode] != undefined) {
+                if (this.#activeExtension[mode] != null) {
                     allButtons[this.#activeExtension[mode]].classList.add('selected');
                     extensions[this.#activeExtension[mode]].style.display = "block";
                 }
@@ -180,12 +165,12 @@ class TabsExtension {
                 });
 
                 observer.observe(extensions[tabKey], { childList: true, subtree: true });
-                return;
+                continue;
             }
 
             const enableToggle = this.#tryFindEnableToggle(extensions[tabKey]);
             if (enableToggle == null)
-                return;
+                continue;
 
             // Ctrl + Click = Toggle
             allButtons[tabKey].addEventListener("click", (e) => {
@@ -198,14 +183,14 @@ class TabsExtension {
                 allButtons[tabKey].classList.add('active');
 
             // Link the Elements to Change Color if Enabled
-            this.#enablePairs[mode].push([enableToggle, allButtons[tabKey]]);
-        });
+            this.#enablePairs.push([enableToggle, allButtons[tabKey]]);
+        }
 
         // Hide Empty Containers
-        ['above', 'left', 'below', 'right'].forEach((side) => {
+        for (const side of ['above', 'left', 'below', 'right']) {
             if (extensionContainers[side].children.length === 0)
                 extensionContainers[side].remove();
-        });
+        }
 
         // Open the first Extension at the start
         if (this.#config.open)
@@ -217,43 +202,43 @@ class TabsExtension {
     static init() {
         this.#config = new TabsExtensionConfigs();
         const configs = this.#config.parseConfigs();
-        const processed_configs = {};
+        const processedConfigs = {};
 
-        setTimeout(() => {
+        for (const mode of ['txt', 'img']) {
+            let extensions = null;
 
-            ['txt', 'img'].forEach((mode) => {
-                let extensions = undefined;
+            const keepExtensions = Object.keys(configs[mode])
+                .filter((ext) => configs[mode][ext] === "keep");
 
-                try {
-                    const parsed = TabsExtensionParser.parse(mode);
-                    extensions = this.#sort_extensions(parsed, configs[mode]);
-                } catch (e) {
-                    alert(`[TabsExtension] Something went wrong while parsing ${mode}2img extensions:\n${e}`);
-                    return;
-                }
-
-                if (this.#config.container)
-                    document.getElementById(`${mode}2img_script_container`).querySelector(".styler").style.display = "none";
-
-                try { processed_configs[mode] = this.#setup_tabs(mode, extensions, configs[mode]); }
-                catch (e) {
-                    alert(`[TabsExtension] Something went wrong during ${mode}2img setup:\n${e}`);
-                    return;
-                }
-            });
-
-            try { this.#config.saveConfigs(processed_configs); }
-            catch (e) {
-                alert(`[TabsExtension] Something went wrong while saving configs:\n${e}`);
-                return;
+            try {
+                const parsed = TabsExtensionParser.parse(mode, keepExtensions);
+                extensions = this.#sort_extensions(parsed, configs[mode]);
+            } catch (e) {
+                alert(`[TabsExtension] Something went wrong while parsing ${mode}2img extensions:\n${e}`);
+                continue;
             }
 
-        }, this.#config.delay);
+            try {
+                processedConfigs[mode] = this.#setup_tabs(mode, extensions, configs[mode]);
+                if (this.#config.container)
+                    document.getElementById(`${mode}2img_script_container`).querySelector(".styler").style.display = "none";
+            }
+            catch (e) {
+                alert(`[TabsExtension] Something went wrong during ${mode}2img setup:\n${e}`);
+                continue;
+            }
+        }
+
+        try { this.#config.saveConfigs(processedConfigs); }
+        catch (e) { alert(`[TabsExtension] Something went wrong while saving configs:\n${e}`); }
 
         document.addEventListener("click", () => this.#refreshEnableCheckbox());
     }
 }
 
 (function () {
-    onUiLoaded(() => setTimeout(() => { TabsExtension.init(); }, 250));
+    onUiLoaded(() => {
+        const delay = document.getElementById("setting_tabs_ex_delay").querySelector("input[type=range]").value;
+        setTimeout(() => { TabsExtension.init(); }, delay);
+    });
 })();

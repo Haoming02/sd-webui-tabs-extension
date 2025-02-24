@@ -1,6 +1,6 @@
 from modules import scripts
 import gradio as gr
-import os
+import os.path
 
 
 CONFIG_FILE = os.path.join(scripts.basedir(), "tab_configs.csv")
@@ -23,13 +23,11 @@ class TabsEx(scripts.Script):
             return None
 
         with gr.Column(visible=False):
-
             dummy = gr.Checkbox(
                 label="Enable",
                 elem_id="TABSEX_CHECKBOX",
                 interactive=True,
             )
-
             label = gr.Textbox(
                 label="[TabsExtension] Configs",
                 elem_id="TABSEX_LBL",
@@ -58,10 +56,13 @@ class TabsEx(scripts.Script):
 
     def _write_data(self, data: str):
         try:
+            global CONFIG_FILE
             if data.strip() != self.data.strip():
                 print("\n[TabsExtension] Saving New Config...\n")
                 with open(CONFIG_FILE, "w+", encoding="utf-8") as csv_file:
                     csv_file.write(data)
+            del CONFIG_FILE
+            del self.data
 
         except Exception:
             raise gr.Error("[TabsExtension] Failed to save config...")
