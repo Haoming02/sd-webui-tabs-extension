@@ -132,7 +132,7 @@ class TabsExtension {
             allButtons[tabKey] = tabButton;
 
             tabButton.addEventListener("click", (e) => {
-                if (e.ctrlKey)
+                if ((!this.#config.rmb) && (e.ctrlKey))
                     return;
 
                 if (this.#activeExtension[mode] != null) {
@@ -167,10 +167,18 @@ class TabsExtension {
 
                 if (this.#config.scripts_toggle) {
                     const btn = document.getElementById(`TABSEX_${mode}2img_s_toggle`);
-                    allButtons[tabKey].addEventListener("click", (e) => {
-                        if (e.ctrlKey)
+                    if (this.#config.rmb) {
+                        allButtons[tabKey].addEventListener("contextmenu", (e) => {
+                            e.preventDefault();
                             btn.click();
-                    });
+                            return false;
+                        });
+                    } else {
+                        allButtons[tabKey].addEventListener("click", (e) => {
+                            if ((e.ctrlKey))
+                                btn.click();
+                        });
+                    }
                 }
 
                 continue;
@@ -181,10 +189,18 @@ class TabsExtension {
                 continue;
 
             // Ctrl + Click = Toggle
-            allButtons[tabKey].addEventListener("click", (e) => {
-                if (e.ctrlKey)
+            if (this.#config.rmb) {
+                allButtons[tabKey].addEventListener("contextmenu", (e) => {
+                    e.preventDefault();
                     enableToggle.click();
-            });
+                    return false;
+                });
+            } else {
+                allButtons[tabKey].addEventListener("click", (e) => {
+                    if (e.ctrlKey)
+                        enableToggle.click();
+                });
+            }
 
             // Check if already Enabled on Start
             if (enableToggle.checked)

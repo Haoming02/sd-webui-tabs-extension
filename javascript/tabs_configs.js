@@ -7,6 +7,7 @@ class TabsExtensionConfigs {
     /** @returns {boolean} */  get sort() { return this.#settings.sort; }
     /** @returns {boolean} */  get toggle() { return this.#settings.toggle; }
     /** @returns {boolean} */  get scripts_toggle() { return this.#settings.scripts_toggle; }
+    /** @returns {boolean} */  get rmb() { return this.#settings.rmb; }
     /** @returns {boolean} */  get version() { return this.#settings.version; }
 
     constructor() {
@@ -17,6 +18,7 @@ class TabsExtensionConfigs {
             ['sort', 'checkbox'],
             ['toggle', 'checkbox'],
             ['scripts_toggle', 'checkbox'],
+            ['rmb', 'checkbox'],
             ['version', 'checkbox']
         ];
 

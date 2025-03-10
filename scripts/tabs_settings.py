@@ -77,6 +77,15 @@ def add_ui_settings():
     )
 
     opts.add_option(
+        "tabs_ex_rmb",
+        OptionInfo(
+            False,
+            "Use Right Click instead of Ctrl + Click for toggling Extensions",
+            **args,
+        ).needs_reload_ui(),
+    )
+
+    opts.add_option(
         "tabs_ex_open",
         OptionInfo(
             True,
