@@ -163,8 +163,16 @@ class TabsExtension {
                             allButtons['Scripts'].classList.remove('active');
                     }
                 });
-
                 observer.observe(extensions[tabKey], { childList: true, subtree: true });
+
+                if (this.#config.scripts_toggle) {
+                    const btn = document.getElementById(`TABSEX_${mode}2img_s_toggle`);
+                    allButtons[tabKey].addEventListener("click", (e) => {
+                        if (e.ctrlKey)
+                            btn.click();
+                    });
+                }
+
                 continue;
             }
 

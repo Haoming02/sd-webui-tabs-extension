@@ -65,5 +65,6 @@ After launching the Webui with this Extension installed, it will generate a `tab
 - **Forge:** Hide the "Integrated" text for the built-in Extensions
 - **Sort:** By default, extensions are sorted based on their order of appearance *(**ie.** The folder names or the `sorting_priority` variable)*; Enable this to sort them based on the order in the `tab_configs.csv`
 - **Toggle:** Allow you to click on the button of an opened tab to hide it instead
+- **Scripts Toggle:** Additionally allow you to `Ctrl + Click` on the `Scripts` button, to toggle the dropdown between the currently selected script and `None`
 - **Open:** By default, the first extension is shown; Disable this to hide all the extensions on start up instead
 - **Hide Container:** By default, this Extension only moves the contents and hide the Accordions, leaving the extension container untouched. When using certain themes that add margins and paddings, the container may show up as an empty block instead. If you do not have any leftover extensions in the container *(**ie.** Those without Accordion in its UI)*, you can hide the entire container instead.

@@ -6,6 +6,7 @@ class TabsExtensionConfigs {
     /** @returns {boolean} */  get open() { return this.#settings.open; }
     /** @returns {boolean} */  get sort() { return this.#settings.sort; }
     /** @returns {boolean} */  get toggle() { return this.#settings.toggle; }
+    /** @returns {boolean} */  get scripts_toggle() { return this.#settings.scripts_toggle; }
     /** @returns {boolean} */  get version() { return this.#settings.version; }
 
     constructor() {
@@ -15,6 +16,7 @@ class TabsExtensionConfigs {
             ['open', 'checkbox'],
             ['sort', 'checkbox'],
             ['toggle', 'checkbox'],
+            ['scripts_toggle', 'checkbox'],
             ['version', 'checkbox']
         ];
 

@@ -3,19 +3,18 @@ from modules.shared import opts, OptionInfo
 
 
 def add_ui_settings():
-    import gradio as gr
+    from gradio import Slider
 
-    section = ("ui_tabs_ex", "Tabs Extension")
+    args = {"section": ("ui_tabs_ex", "Tabs Extension"), "category_id": "ui"}
 
     opts.add_option(
         "tabs_ex_delay",
         OptionInfo(
             50,
             "Delay (ms) before moving the Extensions",
-            gr.Slider,
+            Slider,
             {"minimum": 0, "maximum": 500, "step": 25},
-            section=section,
-            category_id="ui",
+            **args,
         ).needs_reload_ui(),
     )
 
@@ -24,8 +23,7 @@ def add_ui_settings():
         OptionInfo(
             "greenyellow",
             "Color for active Extensions",
-            section=section,
-            category_id="ui",
+            **args,
         )
         .link("CSS", "https://www.w3schools.com/cssref/css_colors.php")
         .needs_reload_ui(),
@@ -36,8 +34,7 @@ def add_ui_settings():
         OptionInfo(
             False,
             "Hide the version number",
-            section=section,
-            category_id="ui",
+            **args,
         ).needs_reload_ui(),
     )
 
@@ -46,8 +43,7 @@ def add_ui_settings():
         OptionInfo(
             False,
             'Hide the "Integrated" text',
-            section=section,
-            category_id="ui",
+            **args,
         )
         .info('for <a href="https://github.com/lllyasviel/stable-diffusion-webui-forge">Forge</a>')
         .needs_reload_ui(),
@@ -58,8 +54,7 @@ def add_ui_settings():
         OptionInfo(
             False,
             "Sort Extensions based on Configs",
-            section=section,
-            category_id="ui",
+            **args,
         ).needs_reload_ui(),
     )
 
@@ -68,8 +63,16 @@ def add_ui_settings():
         OptionInfo(
             False,
             "Allow hiding the extension content when clicking on the same tab button again",
-            section=section,
-            category_id="ui",
+            **args,
+        ).needs_reload_ui(),
+    )
+
+    opts.add_option(
+        "tabs_ex_scripts_toggle",
+        OptionInfo(
+            False,
+            "Allow Ctrl + Click to toggle the Scripts dropdown as well",
+            **args,
         ).needs_reload_ui(),
     )
 
@@ -78,8 +81,7 @@ def add_ui_settings():
         OptionInfo(
             True,
             "Automatically show the first extension tab on startup",
-            section=section,
-            category_id="ui",
+            **args,
         ).needs_reload_ui(),
     )
 
@@ -88,8 +90,7 @@ def add_ui_settings():
         OptionInfo(
             False,
             "Hide the Extension container",
-            section=section,
-            category_id="ui",
+            **args,
         )
         .info("In certain configurations, the original Extension container will show up as an empty space in the Webui. You can enable this to hide the container")
         .needs_reload_ui(),
