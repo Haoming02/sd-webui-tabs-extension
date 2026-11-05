@@ -1,8 +1,9 @@
-from modules.shared import opts
-from modules import scripts
-import gradio as gr
 import os.path
 
+import gradio as gr
+
+from modules import scripts
+from modules.shared import opts
 
 CONFIG_FILE = os.path.join(scripts.basedir(), "tab_configs.csv")
 

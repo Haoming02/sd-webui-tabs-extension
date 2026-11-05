@@ -1,5 +1,5 @@
-from modules.script_callbacks import on_ui_settings, on_before_ui
-from modules.shared import opts, OptionInfo
+from modules.script_callbacks import on_before_ui, on_ui_settings
+from modules.shared import OptionInfo, opts
 
 
 def add_ui_settings():
@@ -45,7 +45,7 @@ def add_ui_settings():
             'Hide the "Integrated" text',
             **args,
         )
-        .info('for <a href="https://github.com/lllyasviel/stable-diffusion-webui-forge">Forge</a>')
+        .info("for <b>Forge</b>")
         .needs_reload_ui(),
     )
 
@@ -101,7 +101,7 @@ def add_ui_settings():
             "Hide the Extension container",
             **args,
         )
-        .info("In certain configurations, the original Extension container will show up as an empty space in the Webui. You can enable this to hide the container")
+        .info("in certain styles, the container would show up as an empty space")
         .needs_reload_ui(),
     )
 
